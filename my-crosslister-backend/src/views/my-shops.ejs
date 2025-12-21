@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Crosslister - My Shops</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; margin: 0; background: #f9fafb; color: #333; }
+        .top-nav {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .left-nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .hamburger-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #555;
+        }
+        .logo { font-weight: bold; font-size: 20px; color: #007bff; }
+        .nav-links a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+        }
+        .nav-links a.active { color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 15px; }
+        .help-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #555;
+            font-size: 14px;
+            position: relative;
+        }
+        .help-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #555;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .avatar-btn {
+            width: 36px;
+            height: 36px;
+            background: #333;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+        }
+        .help-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 80px;
+            background: white;
+            width: 220px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 8px 0;
+            display: none;
+            z-index: 1000;
+        }
+        .help-dropdown.active { display: block; }
+        .help-item {
+            padding: 10px 16px;
+            color: #333;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .help-item:hover {
+            background: #f0f8ff;
+        }
+        .help-divider {
+            height: 1px;
+            background: #eee;
+            margin: 8px 0;
+        }
+        .main-content { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
+        .page-header { font-size: 28px; margin-bottom: 30px; }
+        .shops-sections {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        .shops-column {
+            flex: 1;
+            min-width: 400px;
+        }
+        .column-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .connect-all-btn {
+            background: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .shop-row {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .shop-icon {
+            font-size: 32px;
+        }
+        .shop-info {
+            flex: 1;
+        }
+        .shop-name {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-unconnected {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .status-connected {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        .auto-delist-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        .actions-menu {
+            font-size: 20px;
+            color: #999;
+            cursor: pointer;
+        }
+        /* Floating Message Button */
+        .floating-message-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: #007bff;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 1000;
+        }
+        .floating-message-btn:hover {
+            background: #0056b3;
+            transform: scale(1.1);
+            transition: all 0.2s;
+        }
+        /* Chat Modal */
+        .chat-modal {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 380px;
+            height: 500px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: none;
+            flex-direction: column;
+            z-index: 2000;
+        }
+        .chat-modal.active { display: flex; }
+        .chat-header {
+            background: #1a1f36;
+            color: white;
+            padding: 16px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .chat-tabs {
+            display: flex;
+            gap: 20px;
+            font-size: 15px;
+        }
+        .chat-tab {
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+        }
+        .chat-tab.active {
+            border-bottom: 2px solid white;
+            font-weight: bold;
+        }
+        .chat-avatars {
+            display: flex;
+            margin-left: auto;
+            align-items: center;
+            gap: -10px;
+        }
+        .chat-avatars img, .chat-avatars .pl-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        .pl-avatar {
+            background: #007bff;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .chat-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+        .chat-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+        .chat-message {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 80%;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .chat-message strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #007bff;
+        }
+        .chat-footer {
+            padding: 16px;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 24px;
+            font-size: 14px;
+        }
+        .chat-send {
+            background: #007bff;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .chat-close {
+            position: absolute;
+            bottom: -70px;
+            right: 0;
+            background: #007bff;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Sidebar popup toggle
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const sidebarPopup = document.getElementById('sidebar-popup');
+            if (hamburgerBtn && sidebarPopup) {
+                hamburgerBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    sidebarPopup.classList.toggle('active');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!sidebarPopup.contains(e.target) && e.target !== hamburgerBtn) {
+                        sidebarPopup.classList.remove('active');
+                    }
+                });
+            }
+
+            // Help dropdown toggle
+            const helpBtn = document.getElementById('help-btn');
+            const helpDropdown = document.getElementById('help-dropdown');
+            if (helpBtn && helpDropdown) {
+                helpBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    helpDropdown.classList.toggle('active');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!helpDropdown.contains(e.target) && e.target !== helpBtn) {
+                        helpDropdown.classList.remove('active');
+                    }
+                });
+            }
+
+            // Chat modal toggle
+            const messageBtn = document.getElementById('floating-message-btn');
+            const chatModal = document.getElementById('chat-modal');
+            const chatClose = document.getElementById('chat-close');
+
+            if (messageBtn && chatModal) {
+                messageBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    chatModal.classList.toggle('active');
+                });
+
+                chatClose.addEventListener('click', () => {
+                    chatModal.classList.remove('active');
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (chatModal.classList.contains('active') && !chatModal.contains(e.target) && e.target !== messageBtn) {
+                        chatModal.classList.remove('active');
+                    }
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="top-nav">
+        <div class="left-nav">
+            <button id="hamburger-btn" class="hamburger-btn">☰</button>
+            <div class="logo">Cross-Listing</div>
+        </div>
+        <div class="nav-links">
+            <a href="/inventory">📦 Inventory</a>
+            <a href="#">📋 Tasks</a>
+            <a href="#">🛒 Orders</a>
+            <a href="/my-shops" class="active">🏪 My Shops</a>
+            <a href="/settings">⚙️ Settings</a>
+        </div>
+        <div class="help-user">
+            <button id="help-btn" class="help-btn">🛟 Help</button>
+            <button id="avatar-btn" class="avatar-btn">
+                <% const email = (user && user.email) ? user.email : 'user@example.com'; %>
+                <%= email.charAt(0).toUpperCase() %>
+            </button>
+        </div>
+    </div>
+
+    <!-- Help Dropdown -->
+    <div id="help-dropdown" class="help-dropdown">
+        <div class="help-item">Report Bug</div>
+        <div class="help-item" onclick="window.location.href='/feedback'">Submit Feedback</div>
+        <div class="help-item">Roadmap</div>
+        <div class="help-item">Changelog</div>
+        <div class="help-divider"></div>
+        <div class="help-item">Support Articles</div>
+    </div>
+
+    <!-- Sidebar Popup -->
+    <div id="sidebar-popup" class="sidebar-popup">
+        <div class="sidebar-header">Switch to</div>
+        <div class="sidebar-item active">
+            <span class="icon">✖</span> Cross-listing
+        </div>
+        <div class="sidebar-item">
+            <span class="icon">👚</span> Poshmark Automation
+        </div>
+        <div class="sidebar-item">
+            <span class="icon">🟦</span> eBay Automation
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h1 class="page-header">My Shops</h1>
+
+        <div class="shops-sections">
+            <!-- Browser Login Status -->
+            <div class="shops-column">
+                <div class="column-header">
+                    <h2>Browser Login Status for My Shops</h2>
+                    <button class="connect-all-btn">🔗 Connect All</button>
+                </div>
+
+                <div class="shop-row">
+                    <div class="shop-icon">🛍️</div>
+                    <div class="shop-info">
+                        <div class="shop-name">Mercari Shop</div>
+                        <span class="status-badge status-unconnected">Unconnected</span>
+                    </div>
+                    <div class="auto-delist-toggle">
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                        Auto Delist
+                    </div>
+                    <div class="actions-menu">⋮</div>
+                </div>
+
+                <div class="shop-row">
+                    <div class="shop-icon">👚</div>
+                    <div class="shop-info">
+                        <div class="shop-name">Poshmark (US) Shop</div>
+                        <span class="status-badge status-unconnected">Unconnected</span>
+                    </div>
+                    <div class="auto-delist-toggle">
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                        Auto Delist
+                    </div>
+                    <div class="actions-menu">⋮</div>
+                </div>
+
+                <div class="shop-row">
+                    <div class="shop-icon">👚</div>
+                    <div class="shop-info">
+                        <div class="shop-name">Poshmark (CA) Shop</div>
+                        <span class="status-badge status-unconnected">Unconnected</span>
+                    </div>
+                    <div class="auto-delist-toggle">
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                        Auto Delist
+                    </div>
+                    <div class="actions-menu">⋮</div>
+                </div>
+
+                <div class="shop-row">
+                    <div class="shop-icon">🔴</div>
+                    <div class="shop-info">
+                        <div class="shop-name">Depop Shop</div>
+                        <span class="status-badge status-unconnected">Unconnected</span>
+                    </div>
+                    <div class="auto-delist-toggle">
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                        Auto Delist
+                    </div>
+                    <div class="actions-menu">⋮</div>
+                </div>
+
+                <div class="shop-row">
+                    <div class="shop-icon">⚫</div>
+                    <div class="shop-info">
+                        <div class="shop-name">Grailed Shop</div>
+                        <span class="status-badge status-unconnected">Unconnected</span>
+                    </div>
+                    <div class="auto-delist-toggle">
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                        Auto Delist
+                    </div>
+                    <div class="actions-menu">⋮</div>
+                </div>
+
+                <div class="shop-row">
+                    <div class="shop-icon">📘</div>
+                    <div class="shop-info">
+                        <div class="shop-name">Facebook Shop</div>
+                        <span class="status-badge status-unconnected">Unconnected</span>
+                    </div>
+                    <div class="auto-delist-toggle">
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                        Auto Delist
+                    </div>
+                    <div class="actions-menu">⋮</div>
+                </div>
+
+                <div class="shop-row">
+                    <div class="shop-icon">🧵</div>
+                    <div class="shop-info">
+                        <div class="shop-name">Etsy Shop</div>
+                        <span class="status-badge status-unconnected">Unconnected</span>
+                    </div>
+                    <div class="auto-delist-toggle">
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                        Auto Delist
+                    </div>
+                    <div class="actions-menu">⋮</div>
+                </div>
+
+                <div class="shop-row">
+                    <div class="shop-icon">🛒</div>
+                    <div class="shop-info">
+                        <div class="shop-name">Shopify Shop</div>
+                        <span class="status-badge status-unconnected">Unconnected</span>
+                    </div>
+                    <div class="auto-delist-toggle">
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                        Auto Delist
+                    </div>
+                    <div class="actions-menu">⋮</div>
+                </div>
+            </div>
+
+            <!-- API Connection Status -->
+            <div class="shops-column">
+                <div class="column-header">
+                    <h2>API Connection Status for My Shops</h2>
+                </div>
+
+                <div class="shop-row">
+                    <div class="shop-icon">🟦</div>
+                    <div class="shop-info">
+                        <div class="shop-name">vaultifacts</div>
+                        <span class="status-badge status-connected">Connected</span>
+                    </div>
+                    <div class="auto-delist-toggle">
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                        Auto Delist
+                    </div>
+                    <div class="actions-menu">⋮</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Message Button -->
+    <button id="floating-message-btn" class="floating-message-btn" title="Chat">
+        💬
+    </button>
+
+    <!-- Chat Modal -->
+    <div id="chat-modal" class="chat-modal">
+        <div class="chat-header">
+            <div class="chat-tabs">
+                <div class="chat-tab active">💬 Chat</div>
+                <div class="chat-tab">🛟 Help</div>
+            </div>
+            <div class="chat-avatars">
+                <div class="pl-avatar">PL</div>
+                <img src="https://via.placeholder.com/32" alt="Support">
+                <img src="https://via.placeholder.com/32" alt="Support">
+            </div>
+        </div>
+        <div class="chat-subtitle">
+            Questions? Chat with us!<br>
+            Was last active 11/19/2025
+        </div>
+        <div class="chat-body">
+            <div class="chat-message">
+                <strong>PrimeLister</strong>
+                How can we help with PrimeLister?
+            </div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" class="chat-input" placeholder="Compose your message...">
+            <button class="chat-send">➤</button>
+        </div>
+        <button id="chat-close" class="chat-close">×</button>
+    </div>
+</body>
+</html>

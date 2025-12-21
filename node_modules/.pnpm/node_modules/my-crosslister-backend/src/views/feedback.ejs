@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Crosslister - Feedback & Improvements</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; margin: 0; background: #f9fafb; color: #333; }
+        .top-nav {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .left-nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .hamburger-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #555;
+        }
+        .logo { font-weight: bold; font-size: 20px; color: #007bff; }
+        .nav-links a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+        }
+        .nav-links a.active { color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 15px; }
+        .help-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #555;
+            font-size: 14px;
+            position: relative;
+        }
+        .help-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #555;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .avatar-btn {
+            width: 36px;
+            height: 36px;
+            background: #333;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+        }
+        .help-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 80px;
+            background: white;
+            width: 220px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 8px 0;
+            display: none;
+            z-index: 1000;
+        }
+        .help-dropdown.active { display: block; }
+        .help-item {
+            padding: 10px 16px;
+            color: #333;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .help-item:hover {
+            background: #f0f8ff;
+        }
+        .help-divider {
+            height: 1px;
+            background: #eee;
+            margin: 8px 0;
+        }
+        .main-content {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 40px;
+        }
+        .feedback-main {
+            flex: 2;
+        }
+        .feedback-header {
+            background: #f8f9fa;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .feedback-title {
+            font-size: 26px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .feedback-subtitle {
+            color: #666;
+            font-size: 16px;
+            margin-left: 36px; /* aligns with title text */
+        }
+        .controls-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .filter-select {
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            font-size: 14px;
+        }
+        .search-bar {
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            width: 320px;
+            font-size: 14px;
+        }
+        .submit-feedback-btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .feedback-post-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+        }
+        .feedback-post {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            transition: background 0.2s;
+        }
+        .feedback-post:hover {
+            background: #f8fbff;
+        }
+        .post-votes {
+            font-size: 28px;
+            font-weight: bold;
+            color: #444;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .post-votes-arrow {
+            font-size: 20px;
+            color: #999;
+        }
+        .post-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .post-preview {
+            color: #555;
+            margin-bottom: 16px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .post-tags {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+        .tag {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .tag-planned {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        .tag-in-review {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        .tag-feedback {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        .post-comments {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #999;
+        }
+        .sidebar {
+            flex: 1;
+            min-width: 280px;
+        }
+        .boards-header {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .board-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .board-item.active {
+            background: white;
+            border: 2px solid #007bff;
+            font-weight: bold;
+        }
+        .board-item .plus {
+            margin-left: auto;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .powered-by {
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            margin-top: 60px;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Sidebar popup toggle
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const sidebarPopup = document.getElementById('sidebar-popup');
+            if (hamburgerBtn && sidebarPopup) {
+                hamburgerBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    sidebarPopup.classList.toggle('active');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!sidebarPopup.contains(e.target) && e.target !== hamburgerBtn) {
+                        sidebarPopup.classList.remove('active');
+                    }
+                });
+            }
+
+            // Help dropdown toggle
+            const helpBtn = document.getElementById('help-btn');
+            const helpDropdown = document.getElementById('help-dropdown');
+            if (helpBtn && helpDropdown) {
+                helpBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    helpDropdown.classList.toggle('active');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!helpDropdown.contains(e.target) && e.target !== helpBtn) {
+                        helpDropdown.classList.remove('active');
+                    }
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="top-nav">
+        <div class="left-nav">
+            <button id="hamburger-btn" class="hamburger-btn">☰</button>
+            <div class="logo">Cross-Listing</div>
+        </div>
+        <div class="nav-links">
+            <a href="/inventory">📦 Inventory</a>
+            <a href="#">📋 Tasks</a>
+            <a href="#">🛒 Orders</a>
+            <a href="/my-shops">🏪 My Shops</a>
+            <a href="/settings">⚙️ Settings</a>
+        </div>
+        <div class="help-user">
+            <button id="help-btn" class="help-btn">🛟 Help</button>
+            <button id="avatar-btn" class="avatar-btn">
+                <% const email = (user && user.email) ? user.email : 'user@example.com'; %>
+                <%= email.charAt(0).toUpperCase() %>
+            </button>
+        </div>
+    </div>
+
+    <!-- Help Dropdown -->
+    <div id="help-dropdown" class="help-dropdown">
+        <div class="help-item">Report Bug</div>
+        <div class="help-item" onclick="window.location.href='/feedback'">Submit Feedback</div>
+        <div class="help-item">Roadmap</div>
+        <div class="help-item">Changelog</div>
+        <div class="help-divider"></div>
+        <div class="help-item">Support Articles</div>
+    </div>
+
+    <!-- Sidebar Popup -->
+    <div id="sidebar-popup" class="sidebar-popup">
+        <div class="sidebar-header">Switch to</div>
+        <div class="sidebar-item active">
+            <span class="icon">✖</span> Cross-listing
+        </div>
+        <div class="sidebar-item">
+            <span class="icon">👚</span> Poshmark Automation
+        </div>
+        <div class="sidebar-item">
+            <span class="icon">🟦</span> eBay Automation
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="feedback-main">
+            <div class="feedback-header">
+                <div class="header-top">
+                    <div>
+                        <div class="feedback-title">📝 Feedback & Improvements</div>
+                        <div class="feedback-subtitle">Have something to say? Join the conversation.</div>
+                    </div>
+                </div>
+
+                <div class="controls-row">
+                    <select class="filter-select">
+                        <option>Popular</option>
+                        <option>Newest</option>
+                        <option>Most Commented</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>Select tag</option>
+                    </select>
+                    <input type="text" class="search-bar" placeholder="Search for posts...">
+                    <button class="submit-feedback-btn">📝 Submit Feedback</button>
+                </div>
+            </div>
+
+            <!-- Feedback posts -->
+            <a href="/feedback-detail/depop-refresh-listings" target="_blank" class="feedback-post-link">
+                <div class="feedback-post">
+                    <div class="post-votes">
+                        <span class="post-votes-arrow">↑</span> 62
+                    </div>
+                    <div class="post-title">Depop refresh listings</div>
+                    <div class="post-preview">
+                        Hello! I've been an avid lover of Depop but it has the same issue as Poshmark's "sharing". I was curious to know if PrimeLister will add the refresh listing for Depop any time soon? I do believe this...
+                    </div>
+                    <div class="post-tags">
+                        <span class="tag tag-planned">Planned</span>
+                        <span class="tag tag-feedback">Feedback & Improvements 📝</span>
+                        <span class="post-comments">6 💬</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/feedback-detail/adding-price-and-shipping-information-on-crosslist" target="_blank" class="feedback-post-link">
+                <div class="feedback-post">
+                    <div class="post-votes">
+                        <span class="post-votes-arrow">↑</span> 50
+                    </div>
+                    <div class="post-title">Adding Price and Shipping Information on Crosslist</div>
+                    <div class="post-preview">
+                        I love PrimeLister crosslist feature. With PrimeLister, I would like the price and shipping fields to be filled automatically while crosslisting my products. This will make my work very easy and I can save...
+                    </div>
+                    <div class="post-tags">
+                        <span class="tag tag-planned">Planned</span>
+                        <span class="tag tag-feedback">Feedback & Improvements 📝</span>
+                        <span class="post-comments">4 💬</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/feedback-detail/merging-items-together-automatically" target="_blank" class="feedback-post-link">
+                <div class="feedback-post">
+                    <div class="post-votes">
+                        <span class="post-votes-arrow">↑</span> 34
+                    </div>
+                    <div class="post-title">merging items together automatically</div>
+                    <div class="post-preview">
+                        when importing listings to primelister in my case i have already cross listed a good portion of my items so when i import them to the inventory the items are coming up technically in duplicates and...
+                    </div>
+                    <div class="post-tags">
+                        <span class="tag tag-in-review">In Review</span>
+                        <span class="tag tag-feedback">Feedback & Improvements 📝</span>
+                        <span class="post-comments">3 💬</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/feedback-detail/crucial-poshmark-share-follow-from-feed" target="_blank" class="feedback-post-link">
+                <div class="feedback-post">
+                    <div class="post-votes">
+                        <span class="post-votes-arrow">↑</span> 32
+                    </div>
+                    <div class="post-title">Crucial - Poshmark Share & Follow from feed (Important to reach new buyers)</div>
+                    <div class="post-preview">
+                        Please introduce feature that allows sharing & follow from feed. Not from the main feed (people already following you) but from the search page like search, notification page etc. This is...
+                    </div>
+                    <div class="post-tags">
+                        <span class="tag tag-feedback">Feedback & Improvements 📝</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/feedback-detail/support-vinted-marketplace-and-message-management-system" target="_blank" class="feedback-post-link">
+                <div class="feedback-post">
+                    <div class="post-votes">
+                        <span class="post-votes-arrow">↑</span> 30
+                    </div>
+                    <div class="post-title">Support Vinted Marketplace and message management system</div>
+                    <div class="post-preview">
+                        It would be a great idea to add vinted & maybe a section for all messages received of all linked marketplaces
+                    </div>
+                    <div class="post-tags">
+                        <span class="tag tag-in-review">In Review</span>
+                        <span class="tag tag-feedback">Feedback & Improvements 📝</span>
+                        <span class="post-comments">3 💬</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/feedback-detail/curtsy-cross-listing-supports" target="_blank" class="feedback-post-link">
+                <div class="feedback-post">
+                    <div class="post-votes">
+                        <span class="post-votes-arrow">↑</span> 30
+                    </div>
+                    <div class="post-title">Curtsy cross-listing supports</div>
+                    <div class="post-preview">
+                        I would love to see Curtsy added as platforms to cross list to please and thank you!
+                    </div>
+                    <div class="post-tags">
+                        <span class="tag tag-in-review">In Review</span>
+                        <span class="tag tag-feedback">Feedback & Improvements 📝</span>
+                        <span class="post-comments">1 💬</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/feedback-detail/reseller-research-tool" target="_blank" class="feedback-post-link">
+                <div class="feedback-post">
+                    <div class="post-votes">
+                        <span class="post-votes-arrow">↑</span> 26
+                    </div>
+                    <div class="post-title">Reseller research tool</div>
+                    <div class="post-preview">
+                        a research tool that would research the price of the item you are listing across all platforms, both open and sold listings that would be awesome. I waste so much time researching each item for eac...
+                    </div>
+                    <div class="post-tags">
+                        <span class="tag tag-in-review">In Review</span>
+                        <span class="tag tag-feedback">Feedback & Improvements 📝</span>
+                        <span class="post-comments">1 💬</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="sidebar">
+            <div class="boards-header">
+                Boards
+            </div>
+            <div class="board-item active">
+                📝 Feedback & Improvements
+                <span class="plus">+</span>
+            </div>
+            <div class="board-item">
+                🐛 Bugs & Fixes
+                <span class="plus">+</span>
+            </div>
+            <div class="powered-by">
+                Powered by FeatureOS
+            </div>
+        </div>
+    </div>
+</body>
+</html>

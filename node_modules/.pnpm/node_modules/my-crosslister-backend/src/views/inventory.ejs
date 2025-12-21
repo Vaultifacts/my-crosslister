@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Crosslister - Inventory</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; margin: 0; background: #f9fafb; color: #333; }
+        .top-nav {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .left-nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .hamburger-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #555;
+        }
+        .logo { font-weight: bold; font-size: 20px; color: #007bff; }
+        .nav-links a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+        }
+        .nav-links a.active { color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 15px; }
+        .help-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #555;
+            font-size: 14px;
+            position: relative;
+        }
+        .help-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #555;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .avatar-btn {
+            width: 36px;
+            height: 36px;
+            background: #333;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+        }
+        .help-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 80px;
+            background: white;
+            width: 220px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 8px 0;
+            display: none;
+            z-index: 1000;
+        }
+        .help-dropdown.active { display: block; }
+        .help-item {
+            padding: 10px 16px;
+            color: #333;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .help-item:hover {
+            background: #f0f8ff;
+        }
+        .help-divider {
+            height: 1px;
+            background: #eee;
+            margin: 8px 0;
+        }
+        .alert-banner {
+            background: #fce4ec;
+            color: #c62828;
+            padding: 12px 20px;
+            text-align: center;
+            font-size: 14px;
+            margin: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid #ffcdd2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .alert-banner .exclamation {
+            background: #c62828;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .alert-banner a {
+            background: #c62828;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .beta-notice {
+            text-align: center;
+            padding: 10px;
+            background: #f0f8ff;
+            font-size: 14px;
+            color: #0066cc;
+            margin: 0 20px;
+        }
+        .beta-notice button {
+            margin-left: 10px;
+            background: #ffeb3b;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .main-content { padding: 20px; max-width: 1400px; margin: 0 auto; position: relative; }
+        .page-header { font-size: 24px; margin-bottom: 20px; }
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .left-toolbar { display: flex; align-items: center; gap: 10px; }
+        .search-bar { padding: 8px 12px; width: 300px; border: 1px solid #ddd; border-radius: 4px; }
+        .right-toolbar { display: flex; align-items: center; gap: 10px; }
+        .filters-btn {
+            background: none;
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .icon-btn span {
+            font-size: 14px;
+            color: #333;
+        }
+        .new-listing-wrapper {
+            position: relative;
+        }
+        .new-listing-btn {
+            background: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .new-listing-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            width: 220px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 8px 0;
+            display: none;
+            z-index: 1000;
+            margin-top: -1px;
+        }
+        .new-listing-dropdown.active { display: block; }
+        .new-listing-item {
+            padding: 10px 16px;
+            color: #333;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+        .new-listing-item:hover { background: #f0f8ff; }
+        .new-listing-item .arrow { font-size: 12px; color: #999; }
+        .import-submenu {
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background: white;
+            width: 220px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 8px 0;
+            display: none;
+        }
+        .import-item:hover > .import-submenu { display: block; }
+        .marketplace-item {
+            padding: 10px 16px;
+            color: #333;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .marketplace-item:hover { background: #f0f8ff; }
+        .marketplace-icon { font-size: 20px; }
+        /* Sidebar Popup */
+        .sidebar-popup {
+            position: absolute;
+            top: 60px;
+            left: 20px;
+            background: white;
+            width: 260px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 16px;
+            display: none;
+            z-index: 1000;
+        }
+        .sidebar-popup.active { display: block; }
+        .sidebar-header {
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #666;
+        }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .sidebar-item:hover {
+            background: #f0f8ff;
+        }
+        .sidebar-item.active {
+            background: #e3f2fd;
+            font-weight: bold;
+        }
+        .sidebar-item .icon {
+            font-size: 20px;
+        }
+        /* Auto-merge Modal */
+        .auto-merge-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .auto-merge-modal.active { display: flex; }
+        .modal-content {
+            background: white;
+            width: 800px;
+            max-height: 90vh;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #eee;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        .modal-body {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+        }
+        .summary-box {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+        .select-all-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+        .merge-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .merge-table th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #ddd;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        .empty-state strong {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        .modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+        }
+        .selection-count {
+            font-size: 14px;
+            color: #555;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .modal-btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .modal-cancel {
+            background: none;
+            border: 1px solid #ddd;
+            color: #333;
+        }
+        .modal-merge {
+            background: #007bff;
+            color: white;
+            border: none;
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .filters-panel {
+            position: absolute;
+            top: 120px;
+            left: 20px;
+            background: white;
+            width: 380px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 16px;
+            z-index: 999;
+            display: none;
+            overflow: hidden;
+        }
+        .filters-panel.active { display: block; }
+        .filter-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            min-width: 0;
+        }
+        .filter-row > * { flex-shrink: 0; }
+        .filter-row select {
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-width: 100px;
+        }
+        .filter-row .value-input {
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            flex: 1;
+            min-width: 0;
+        }
+        .remove-filter {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 18px;
+            width: 24px;
+            flex-shrink: 0;
+        }
+        .add-filter-btn {
+            background: none;
+            border: none;
+            color: #007bff;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #ddd;
+        }
+        td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: middle; }
+        tr.hidden { display: none; }
+        tr:hover { background: #f5faff; }
+        img.thumbnail { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
+        .marketplace-badges { display: flex; flex-direction: column; gap: 4px; }
+        .badge {
+            background: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            text-align: center;
+        }
+        .status-listed { background: #e3f2fd; color: #1976d2; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        .empty-message { text-align: center; padding: 40px; color: #666; }
+        /* Floating Message Button */
+        .floating-message-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: #007bff;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 1000;
+        }
+        .floating-message-btn:hover {
+            background: #0056b3;
+            transform: scale(1.1);
+            transition: all 0.2s;
+        }
+        /* Chat Modal */
+        .chat-modal {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 380px;
+            height: 500px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: none;
+            flex-direction: column;
+            z-index: 2000;
+        }
+        .chat-modal.active { display: flex; }
+        .chat-header {
+            background: #1a1f36;
+            color: white;
+            padding: 16px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .chat-tabs {
+            display: flex;
+            gap: 20px;
+            font-size: 15px;
+        }
+        .chat-tab {
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+        }
+        .chat-tab.active {
+            border-bottom: 2px solid white;
+            font-weight: bold;
+        }
+        .chat-avatars {
+            display: flex;
+            margin-left: auto;
+            align-items: center;
+            gap: -10px;
+        }
+        .chat-avatars img, .chat-avatars .pl-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        .pl-avatar {
+            background: #007bff;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .chat-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+        .chat-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+        .chat-message {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 80%;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .chat-message strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #007bff;
+        }
+        .chat-footer {
+            padding: 16px;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 24px;
+            font-size: 14px;
+        }
+        .chat-send {
+            background: #007bff;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .chat-close {
+            position: absolute;
+            bottom: -70px;
+            right: 0;
+            background: #007bff;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Avatar dropdown
+            const avatarBtn = document.getElementById('avatar-btn');
+            const userDropdown = document.getElementById('user-dropdown');
+            if (avatarBtn && userDropdown) {
+                avatarBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    userDropdown.classList.toggle('active');
+                });
+                document.addEventListener('click', () => userDropdown.classList.remove('active'));
+            }
+
+            // Help dropdown toggle
+            const helpBtn = document.getElementById('help-btn');
+            const helpDropdown = document.getElementById('help-dropdown');
+            if (helpBtn && helpDropdown) {
+                helpBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    helpDropdown.classList.toggle('active');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!helpDropdown.contains(e.target) && e.target !== helpBtn) {
+                        helpDropdown.classList.remove('active');
+                    }
+                });
+            }
+
+            // New Listing dropdown
+            const newListingBtn = document.getElementById('new-listing-btn');
+            const newListingDropdown = document.getElementById('new-listing-dropdown');
+            if (newListingBtn && newListingDropdown) {
+                newListingBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    newListingDropdown.classList.toggle('active');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!newListingDropdown.contains(e.target)) {
+                        newListingDropdown.classList.remove('active');
+                    }
+                });
+            }
+
+            // Sidebar popup toggle
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const sidebarPopup = document.getElementById('sidebar-popup');
+            if (hamburgerBtn && sidebarPopup) {
+                hamburgerBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    sidebarPopup.classList.toggle('active');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!sidebarPopup.contains(e.target) && e.target !== hamburgerBtn) {
+                        sidebarPopup.classList.remove('active');
+                    }
+                });
+            }
+
+            // Filters panel
+            const filtersBtn = document.getElementById('filters-btn');
+            const filtersPanel = document.getElementById('filters-panel');
+            if (filtersBtn && filtersPanel) {
+                filtersBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    filtersPanel.classList.toggle('active');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!filtersPanel.contains(e.target) && e.target !== filtersBtn) {
+                        filtersPanel.classList.remove('active');
+                    }
+                });
+            }
+
+            // Fullscreen button
+            const fullscreenBtn = document.getElementById('fullscreen-btn');
+            const fullscreenIcon = document.getElementById('fullscreen-icon');
+            function toggleFullscreen() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => {
+                        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+                    });
+                } else {
+                    document.exitFullscreen();
+                }
+            }
+            fullscreenBtn.addEventListener('click', toggleFullscreen);
+            document.addEventListener('fullscreenchange', () => {
+                if (document.fullscreenElement) {
+                    fullscreenIcon.textContent = '↙';
+                } else {
+                    fullscreenIcon.textContent = '⛶';
+                }
+            });
+
+            // Auto-merge modal
+            const autoMergeBtn = document.getElementById('auto-merge-btn');
+            const autoMergeModal = document.getElementById('auto-merge-modal');
+            const modalClose = document.getElementById('modal-close');
+
+            autoMergeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                autoMergeModal.classList.add('active');
+            });
+
+            modalClose.addEventListener('click', () => {
+                autoMergeModal.classList.remove('active');
+            });
+
+            autoMergeModal.addEventListener('click', (e) => {
+                if (e.target === autoMergeModal) {
+                    autoMergeModal.classList.remove('active');
+                }
+            });
+
+            // Chat modal toggle
+            const messageBtn = document.getElementById('floating-message-btn');
+            const chatModal = document.getElementById('chat-modal');
+            const chatClose = document.getElementById('chat-close');
+
+            if (messageBtn && chatModal) {
+                messageBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    chatModal.classList.toggle('active');
+                });
+
+                chatClose.addEventListener('click', () => {
+                    chatModal.classList.remove('active');
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (chatModal.classList.contains('active') && !chatModal.contains(e.target) && e.target !== messageBtn) {
+                        chatModal.classList.remove('active');
+                    }
+                });
+            }
+
+            // Filter creation and filtering logic
+            const filtersContainer = document.getElementById('filters-container');
+            function createFilterRow() {
+                const row = document.createElement('div');
+                row.className = 'filter-row';
+                row.innerHTML = `
+                    <button class="remove-filter">×</button>
+                    <select class="column-select">
+                        <option value="title">Name</option>
+                        <option value="sku">SKU</option>
+                        <option value="price">Price</option>
+                        <option value="source">Marketplace</option>
+                        <option value="tags">Tags</option>
+                        <option value="status">Status</option>
+                        <option value="createdAt">Created At</option>
+                    </select>
+                    <select class="operator-select">
+                        <option value="contains">contains</option>
+                        <option value="equals">equals</option>
+                        <option value="starts">starts with</option>
+                        <option value="ends">ends with</option>
+                        <option value="empty">is empty</option>
+                        <option value="notempty">is not empty</option>
+                        <option value="any">is any of</option>
+                    </select>
+                    <input type="text" class="value-input" placeholder="Filter value">
+                `;
+                filtersContainer.appendChild(row);
+
+                row.querySelector('.remove-filter').addEventListener('click', () => {
+                    row.remove();
+                    applyFilters();
+                });
+
+                row.querySelectorAll('select, input').forEach(el => {
+                    el.addEventListener('change', applyFilters);
+                    el.addEventListener('input', applyFilters);
+                });
+            }
+
+            filtersBtn.addEventListener('click', () => {
+                if (filtersContainer.children.length === 0) {
+                    createFilterRow();
+                }
+            });
+
+            const addFilterBtn = document.getElementById('add-filter-btn');
+            addFilterBtn.addEventListener('click', createFilterRow);
+
+            function applyFilters() {
+                const rows = document.querySelectorAll('tbody tr:not(.empty-message)');
+                const filters = document.querySelectorAll('.filter-row');
+
+                rows.forEach(row => {
+                    let match = true;
+
+                    filters.forEach(filter => {
+                        const column = filter.querySelector('.column-select').value;
+                        const operator = filter.querySelector('.operator-select').value;
+                        const value = filter.querySelector('.value-input').value.trim().toLowerCase();
+
+                        let cellValue = '';
+                        if (column === 'title') cellValue = (row.cells[2].textContent || '').toLowerCase();
+                        else if (column === 'sku') cellValue = (row.cells[3].textContent || '').toLowerCase();
+                        else if (column === 'price') cellValue = (row.cells[4].textContent || '').toLowerCase();
+                        else if (column === 'source') cellValue = (row.cells[5].textContent || '').toLowerCase();
+                        else if (column === 'tags') cellValue = (row.cells[6].textContent || '').toLowerCase();
+                        else if (column === 'status') cellValue = (row.cells[7].textContent || '').toLowerCase();
+                        else if (column === 'createdAt') cellValue = (row.cells[8].textContent || '').toLowerCase();
+
+                        let rowMatch = true;
+                        if (operator === 'contains') rowMatch = cellValue.includes(value);
+                        else if (operator === 'equals') rowMatch = cellValue === value;
+                        else if (operator === 'starts') rowMatch = cellValue.startsWith(value);
+                        else if (operator === 'ends') rowMatch = cellValue.endsWith(value);
+                        else if (operator === 'empty') rowMatch = cellValue.trim() === '' || cellValue === '-';
+                        else if (operator === 'notempty') rowMatch = cellValue.trim() !== '' && cellValue !== '-';
+                        else if (operator === 'any') rowMatch = true;
+
+                        if (!rowMatch) match = false;
+                    });
+
+                    row.classList.toggle('hidden', !match);
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="top-nav">
+        <div class="left-nav">
+            <button id="hamburger-btn" class="hamburger-btn">☰</button>
+            <div class="logo">Cross-Listing</div>
+        </div>
+        <div class="nav-links">
+            <a href="/inventory" class="active">📦 Inventory</a>
+            <a href="#">📋 Tasks</a>
+            <a href="#">🛒 Orders</a>
+            <a href="/my-shops">🏪 My Shops</a>
+            <a href="/settings">⚙️ Settings</a>
+        </div>
+        <div class="help-user">
+            <button id="help-btn" class="help-btn">🛟 Help</button>
+            <button id="avatar-btn" class="avatar-btn">
+                <% const email = (user && user.email) ? user.email : 'user@example.com'; %>
+                <%= email.charAt(0).toUpperCase() %>
+            </button>
+        </div>
+    </div>
+
+    <!-- Help Dropdown -->
+    <div id="help-dropdown" class="help-dropdown">
+        <div class="help-item">Report Bug</div>
+        <div class="help-item" onclick="window.location.href='/feedback'">Submit Feedback</div>
+        <div class="help-item">Roadmap</div>
+        <div class="help-item">Changelog</div>
+        <div class="help-divider"></div>
+        <div class="help-item">Support Articles</div>
+    </div>
+
+    <!-- Sidebar Popup -->
+    <div id="sidebar-popup" class="sidebar-popup">
+        <div class="sidebar-header">Switch to</div>
+        <div class="sidebar-item active">
+            <span class="icon">✖</span> Cross-listing
+        </div>
+        <div class="sidebar-item">
+            <span class="icon">👚</span> Poshmark Automation
+        </div>
+        <div class="sidebar-item">
+            <span class="icon">🟦</span> eBay Automation
+        </div>
+    </div>
+
+    <div id="user-dropdown" class="user-dropdown">
+        <div class="user-info">
+            <strong>Vaultifacts Official</strong>
+            <span><%= email %></span>
+        </div>
+        <div class="dropdown-divider"></div>
+        <a href="/settings" class="dropdown-item">Settings</a>
+        <a href="#" class="dropdown-item">Plans/Billing</a>
+        <a href="#" class="dropdown-item">Affiliate Program</a>
+        <div class="dropdown-divider"></div>
+        <a href="/logout" class="dropdown-item logout">Logout</a>
+    </div>
+
+    <div class="alert-banner">
+        <div class="exclamation">!</div>
+        Attention! Extension is not installed on your browser. To use PrimeLister, please install the extension.
+        <a href="#">Install Extension</a>
+    </div>
+
+    <div class="beta-notice">
+        You're using Cloud Cross-listing beta. Switch back to old experience | <button>Share Feedback</button>
+    </div>
+
+    <div class="main-content">
+        <div class="page-header">Inventory</div>
+
+        <div class="toolbar">
+            <div class="left-toolbar">
+                <button id="filters-btn" class="filters-btn">
+                    Filters ▼
+                </button>
+                <input type="text" class="search-bar" placeholder="Search product name, SKU or internal note...">
+            </div>
+            <div class="right-toolbar">
+                <button id="auto-merge-btn" class="icon-btn" title="Auto-merge">🔗 <span>Auto-merge</span></button>
+                <button id="fullscreen-btn" class="icon-btn" title="Fullscreen">
+                    <span id="fullscreen-icon">⛶</span> <span>Fullscreen</span>
+                </button>
+                <button class="icon-btn" title="Refresh">🔄 <span>Refresh</span></button>
+                <button class="icon-btn" onclick="window.location.href='/settings'">⚙️ <span>Settings</span></button>
+                <div class="new-listing-wrapper">
+                    <button id="new-listing-btn" class="new-listing-btn">+ New Listing</button>
+                    <div id="new-listing-dropdown" class="new-listing-dropdown">
+                        <div class="new-listing-item import-item">
+                            Import From Marketplace <span class="arrow">→</span>
+                            <div class="import-submenu">
+                                <div class="marketplace-item"><span class="marketplace-icon">👚</span> Poshmark (US)</div>
+                                <div class="marketplace-item"><span class="marketplace-icon">👚</span> Poshmark (CA)</div>
+                                <div class="marketplace-item"><span class="marketplace-icon">🛍️</span> Mercari</div>
+                                <div class="marketplace-item"><span class="marketplace-icon">🔴</span> Depop</div>
+                                <div class="marketplace-item"><span class="marketplace-icon">🟦</span> eBay</div>
+                                <div class="marketplace-item"><span class="marketplace-icon">🧵</span> Etsy</div>
+                                <div class="marketplace-item"><span class="marketplace-icon">🛒</span> Shopify</div>
+                                <div class="marketplace-item"><span class="marketplace-icon">📘</span> Facebook</div>
+                                <div class="marketplace-item"><span class="marketplace-icon">⚫</span> Grailed</div>
+                            </div>
+                        </div>
+                        <div class="new-listing-item" onclick="window.location.href='/inventory/create'">Create New</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters Panel -->
+        <div id="filters-panel" class="filters-panel">
+            <div id="filters-container"></div>
+            <button id="add-filter-btn" class="add-filter-btn">+ Add Filter</button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th><input type="checkbox"></th>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>SKU</th>
+                    <th>Price</th>
+                    <th>Marketplace</th>
+                    <th>Tags</th>
+                    <th>Status</th>
+                    <th>Created At ↓</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (items.length === 0) { %>
+                    <tr>
+                        <td colspan="9" class="empty-message">
+                            No items in inventory yet. Use the extension to import listings!
+                        </td>
+                    </tr>
+                <% } else { %>
+                    <% items.forEach(item => { %>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td>
+                                <% if (item.images && item.images.length > 0) { %>
+                                    <img src="<%= item.images[0] %>" alt="Thumbnail" class="thumbnail">
+                                <% } else { %>
+                                    —
+                                <% } %>
+                            </td>
+                            <td><%= item.title || 'Untitled' %></td>
+                            <td><%= item.sku || '-' %></td>
+                            <td>$<%= Number(item.price).toFixed(2) %></td>
+                            <td class="marketplace-badges">
+                                <div class="badge"><%= item.source || 'Poshmark (CA)' %></div>
+                            </td>
+                            <td>-</td>
+                            <td><span class="status-listed">Listed</span></td>
+                            <td><%= new Date(item.createdAt).toLocaleDateString() %></td>
+                        </tr>
+                    <% }) %>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Auto-merge Modal -->
+    <div id="auto-merge-modal" class="auto-merge-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                Auto-merge Matched Items
+                <button id="modal-close" class="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="summary-box">
+                    Matched Items Summary<br>
+                    Found 0 matched items across 0 groups. Check main items to select all matches in that group.
+                </div>
+                <label class="select-all-label">
+                    <input type="checkbox">
+                    Select All
+                </label>
+                <table class="merge-table">
+                    <thead>
+                        <tr>
+                            <th>Listing</th>
+                            <th>Price</th>
+                            <th>Matches</th>
+                        </tr>
+                    </thead>
+                </table>
+                <div class="empty-state">
+                    <strong>No matched items</strong>
+                    No matched items were found to merge. Your inventory appears to be clean!
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="selection-count">0 item(s) selected for merging</div>
+                <div class="modal-actions">
+                    <button class="modal-btn modal-cancel">Cancel</button>
+                    <button class="modal-btn modal-merge" disabled>Merge Selected Items</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Message Button -->
+    <button id="floating-message-btn" class="floating-message-btn" title="Chat">
+        💬
+    </button>
+
+    <!-- Chat Modal -->
+    <div id="chat-modal" class="chat-modal">
+        <div class="chat-header">
+            <div class="chat-tabs">
+                <div class="chat-tab active">💬 Chat</div>
+                <div class="chat-tab">🛟 Help</div>
+            </div>
+            <div class="chat-avatars">
+                <div class="pl-avatar">PL</div>
+                <img src="https://via.placeholder.com/32" alt="Support">
+                <img src="https://via.placeholder.com/32" alt="Support">
+            </div>
+        </div>
+        <div class="chat-subtitle">
+            Questions? Chat with us!<br>
+            Was last active 11/19/2025
+        </div>
+        <div class="chat-body">
+            <div class="chat-message">
+                <strong>PrimeLister</strong>
+                How can we help with PrimeLister?
+            </div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" class="chat-input" placeholder="Compose your message...">
+            <button class="chat-send">➤</button>
+        </div>
+        <button id="chat-close" class="chat-close">×</button>
+    </div>
+</body>
+</html>

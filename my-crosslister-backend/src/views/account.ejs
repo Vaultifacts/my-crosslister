@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Crosslister - Account</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; margin: 0; background: #f9fafb; color: #333; }
+        .top-nav {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .left-nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .hamburger-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #555;
+        }
+        .logo { font-weight: bold; font-size: 20px; color: #007bff; }
+        .nav-links a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+        }
+        .nav-links a.active { color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 15px; }
+        .help-user { display: flex; align-items: center; gap: 20px; color: #555; font-size: 14px; }
+        .avatar-btn {
+            width: 36px;
+            height: 36px;
+            background: #333;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+        }
+        /* Sidebar Popup */
+        .sidebar-popup {
+            position: absolute;
+            top: 60px;
+            left: 20px;
+            background: white;
+            width: 260px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 16px;
+            display: none;
+            z-index: 1000;
+        }
+        .sidebar-popup.active { display: block; }
+        .sidebar-header {
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #666;
+        }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .sidebar-item:hover {
+            background: #f0f8ff;
+        }
+        .sidebar-item.active {
+            background: #e3f2fd;
+            font-weight: bold;
+        }
+        .sidebar-item .icon {
+            font-size: 20px;
+        }
+        .main-content { padding: 40px 20px; max-width: 800px; margin: 0 auto; }
+        .page-header { font-size: 28px; margin-bottom: 30px; }
+        .account-tabs {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .account-tab {
+            font-size: 16px;
+            color: #666;
+            padding: 8px 0;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+        .account-tab.active {
+            color: #007bff;
+            border-bottom: 3px solid #007bff;
+            font-weight: bold;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .beta-section {
+            margin: 40px 0;
+            padding: 20px;
+            background: #f0f8ff;
+            border-radius: 8px;
+        }
+        .beta-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 24px;
+            width: 24px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #007bff;
+        }
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+        .beta-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+        .save-changes-btn {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .deactivate-btn {
+            color: #dc3545;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Sidebar popup toggle
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const sidebarPopup = document.getElementById('sidebar-popup');
+            if (hamburgerBtn && sidebarPopup) {
+                hamburgerBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    sidebarPopup.classList.toggle('active');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!sidebarPopup.contains(e.target) && e.target !== hamburgerBtn) {
+                        sidebarPopup.classList.remove('active');
+                    }
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="top-nav">
+        <div class="left-nav">
+            <button id="hamburger-btn" class="hamburger-btn">☰</button>
+            <div class="logo">Cross-Listing</div>
+        </div>
+        <div class="nav-links">
+            <a href="/inventory">📦 Inventory</a>
+            <a href="#">📋 Tasks</a>
+            <a href="#">🛒 Orders</a>
+            <a href="/my-shops">🏪 My Shops</a>
+            <a href="/account" class="active">👤 Account</a>
+        </div>
+        <div class="help-user">
+            🛟 Help
+            <button id="avatar-btn" class="avatar-btn">
+                <% const email = (user && user.email) ? user.email : 'user@example.com'; %>
+                <%= email.charAt(0).toUpperCase() %>
+            </button>
+        </div>
+    </div>
+
+    <!-- Sidebar Popup -->
+    <div id="sidebar-popup" class="sidebar-popup">
+        <div class="sidebar-header">Switch to</div>
+        <div class="sidebar-item active">
+            <span class="icon">✖</span> Cross-listing
+        </div>
+        <div class="sidebar-item">
+            <span class="icon">👚</span> Poshmark Automation
+        </div>
+        <div class="sidebar-item">
+            <span class="icon">🟦</span> eBay Automation
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h1 class="page-header">Account</h1>
+
+        <div class="account-tabs">
+            <div class="account-tab active">General</div>
+            <div class="account-tab">Plans & Billing</div>
+            <div class="account-tab">Affiliate Program</div>
+            <div class="account-tab">Notifications</div>
+            <div class="account-tab">Change Password</div>
+        </div>
+
+        <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" value="Vaultifacts Official">
+        </div>
+
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" value="<%= email %>" readonly style="background:#f8f9fa;">
+        </div>
+
+        <div class="form-group">
+            <label>Time Zone</label>
+            <select>
+                <option>America/Edmonton (GMT -07:00)</option>
+                <option>Pacific Time (GMT -08:00)</option>
+                <option>Eastern Time (GMT -05:00)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Default Home Page</label>
+            <select>
+                <option>✖ Cross-listing</option>
+                <option>📦 Inventory</option>
+                <option>📋 Tasks</option>
+            </select>
+        </div>
+
+        <div class="beta-section">
+            <div class="beta-title">Beta Features</div>
+            <p style="color:#666; margin-bottom: 16px;">Get early access to new features and improvements before they're released to everyone.</p>
+            <div class="beta-toggle">
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+                Enable Beta Features
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="save-changes-btn">Save Changes</button>
+            <button class="deactivate-btn">Deactivate My Account</button>
+        </div>
+    </div>
+</body>
+</html>

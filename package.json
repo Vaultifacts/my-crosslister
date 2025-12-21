@@ -1,0 +1,10 @@
+{
+  "name": "my-crosslister-root",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"pnpm --filter my-crosslister-backend dev\" \"pnpm --filter my-crosslister-extension dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
