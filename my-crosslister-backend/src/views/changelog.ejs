@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Log - PrimeLister</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; margin: 0; background: #f9fafb; color: #333; }
+        .top-nav {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .logo { font-weight: bold; font-size: 20px; color: #007bff; }
+        .auth-buttons { display: flex; gap: 10px; }
+        .auth-btn { padding: 8px 16px; border: 1px solid #ddd; border-radius: 6px; background: white; cursor: pointer; }
+        .auth-btn.primary { background: #007bff; color: white; border: none; }
+        .sub-nav {
+            background: white;
+            padding: 10px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        .sub-nav a {
+            text-decoration: none;
+            color: #555;
+            font-size: 15px;
+            padding: 8px 0;
+            white-space: nowrap;
+        }
+        .sub-nav a.active {
+            color: #007bff;
+            font-weight: bold;
+            border-bottom: 3px solid #007bff;
+        }
+        .main-content {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .page-title {
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .rss-link {
+            color: #f26522;
+            font-size: 18px;
+            text-decoration: none;
+        }
+        .page-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .search-bar {
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            width: 300px;
+            font-size: 14px;
+        }
+        .tag-filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        .tag-filter {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .tag-bugfix { background: #d1ecf1; color: #0c5460; border: 2px solid transparent; }
+        .tag-deprecation { background: #f8f9fa; color: #6c757d; border: 2px solid transparent; }
+        .tag-improvement { background: #fff3cd; color: #856404; border: 2px solid transparent; }
+        .tag-newfeature { background: #d4edda; color: #155724; border: 2px solid transparent; }
+
+        /* Active state for main filters */
+        .tag-filter.active {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .tag-bugfix.active { background: #bee5eb; border-color: #0c5460; }
+        .tag-deprecation.active { background: #e2e3e5; border-color: #6c757d; }
+        .tag-improvement.active { background: #ffeaa7; border-color: #856404; }
+        .tag-newfeature.active { background: #c3e6cb; border-color: #155724; }
+
+        /* Classification tags inside entries (non-interactive) */
+        .entry-classification {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .class-tag {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .class-bugfix { background: #d1ecf1; color: #0c5460; }
+        .class-improvement { background: #fff3cd; color: #856404; }
+        .class-newfeature { background: #d4edda; color: #155724; }
+
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 12px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #ddd;
+        }
+        .entry {
+            position: relative;
+            margin-bottom: 60px;
+            display: block;
+        }
+        .entry.hidden {
+            display: none;
+        }
+        .entry-date {
+            position: absolute;
+            left: -140px;
+            top: 4px;
+            color: #999;
+            font-size: 14px;
+            width: 120px;
+            text-align: right;
+        }
+        .entry-dot {
+            position: absolute;
+            left: -28px;
+            top: 8px;
+            width: 12px;
+            height: 12px;
+            background: #007bff;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 4px #ddd;
+        }
+        .entry-content {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+        .version-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .change-list {
+            list-style: disc;
+            padding-left: 20px;
+            line-height: 1.6;
+            color: #555;
+        }
+        .change-list li {
+            margin-bottom: 12px;
+        }
+        .reactions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+        }
+        .reaction-btn {
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .copy-btn {
+            margin-left: auto;
+            color: #666;
+            cursor: pointer;
+        }
+        .powered-by {
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            margin-top: 80px;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tagButtons = document.querySelectorAll('.tag-filter');
+            const entries = document.querySelectorAll('.entry');
+
+            function filterEntries() {
+                const activeTags = Array.from(tagButtons)
+                    .filter(btn => btn.classList.contains('active'))
+                    .map(btn => {
+                        if (btn.classList.contains('tag-bugfix')) return 'bugfix';
+                        if (btn.classList.contains('tag-deprecation')) return 'deprecation';
+                        if (btn.classList.contains('tag-improvement')) return 'improvement';
+                        if (btn.classList.contains('tag-newfeature')) return 'newfeature';
+                        return '';
+                    });
+
+                entries.forEach(entry => {
+                    if (activeTags.length === 0) {
+                        entry.classList.remove('hidden');
+                    } else {
+                        const entryTags = entry.dataset.tags.split(' ');
+                        const matches = activeTags.some(tag => entryTags.includes(tag));
+                        if (matches) {
+                            entry.classList.remove('hidden');
+                        } else {
+                            entry.classList.add('hidden');
+                        }
+                    }
+                });
+            }
+
+            tagButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    btn.classList.toggle('active');
+                    filterEntries();
+                });
+            });
+
+            // Initial: show all
+            filterEntries();
+        });
+    </script>
+</head>
+<body>
+    <div class="top-nav">
+        <div class="logo">PL PrimeLister</div>
+        <div class="auth-buttons">
+            <button class="auth-btn">Sign in</button>
+            <button class="auth-btn primary">Sign up</button>
+        </div>
+    </div>
+
+    <div class="sub-nav">
+        <a href="/feedback">📝 FEEDBACK & IMPROVEMENTS 🎁</a>
+        <a href="/roadmap">🛣️ ROADMAP</a>
+        <a href="/changelog" class="active">📜 CHANGE LOG</a>
+    </div>
+
+    <div class="main-content">
+        <div class="page-header">
+            <div class="page-title">
+                Change Log
+                <a href="#" class="rss-link">🔗 RSS</a>
+            </div>
+            <input type="text" class="search-bar" placeholder="Search updates...">
+        </div>
+
+        <div class="page-subtitle">Follow new updates and improvements to PrimeLister.</div>
+
+        <div class="tag-filters">
+            <div class="tag-filter tag-bugfix">🔧 Bug Fixes</div>
+            <div class="tag-filter tag-deprecation">⚠️ Deprecation</div>
+            <div class="tag-filter tag-improvement">✨ Improvements</div>
+            <div class="tag-filter tag-newfeature">✅ New Feature</div>
+        </div>
+
+        <div class="timeline">
+            <!-- Entry 1: Bug Fixes -->
+            <div class="entry" data-tags="bugfix">
+                <div class="entry-date">5 months ago</div>
+                <div class="entry-dot"></div>
+                <div class="entry-content">
+                    <div class="version-title">Version v2.0.85</div>
+                    <div class="entry-classification">
+                        <div class="class-tag class-bugfix">🔧 Bug Fixes</div>
+                    </div>
+                    <ul class="change-list">
+                        <li><strong>Facebook Bulk Import Fix:</strong> Resolved the “start is null” error that occurred when bulk importing listings from Facebook. Importing should now work seamlessly.</li>
+                        <li><strong>Poshmark to Shopify Fix:</strong> Fixed an issue where the description field was missing when crosslisting from Poshmark to Shopify. Descriptions will now carry over as expected.</li>
+                        <li><strong>Offer to Likers Fix:</strong> Previously, offers could not be sent because no discount option had been selected. This issue is now resolved — the system will handle this smoothly going forward.</li>
+                    </ul>
+                    <div class="reactions">
+                        <span class="reaction-btn">👍</span>
+                        <span class="reaction-btn">😄</span>
+                        <span class="reaction-btn">🚀</span>
+                        <span class="reaction-btn">❤️</span>
+                        <span class="reaction-btn">✂️</span>
+                        <span class="reaction-btn">👀</span>
+                        <span class="reaction-btn">🔥</span>
+                        <span class="copy-btn">📋 Copy</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Entry 2: Bug Fixes + Improvements -->
+            <div class="entry" data-tags="bugfix improvement">
+                <div class="entry-date">8 months ago</div>
+                <div class="entry-dot"></div>
+                <div class="entry-content">
+                    <div class="version-title">Version v2.0.81</div>
+                    <div class="entry-classification">
+                        <div class="class-tag class-bugfix">🔧 Bug Fixes</div>
+                        <div class="class-tag class-improvement">✨ Improvements</div>
+                    </div>
+                    <ul class="change-list">
+                        <li><strong>Blank Page on PrimeLister App:</strong> Fixed an issue where the app displayed a blank page, restoring full functionality and improving user access.</li>
+                        <li><strong>Auto-Delist Sold Items Detection:</strong> Addressed a problem where the auto-delist feature failed to detect all sold items, ensuring accurate inventory updates.</li>
+                        <li><strong>eBay Automation – Quantity Reset:</strong> Fixed a bug where the “Recreate” function incorrectly reset the available quantity, maintaining accurate stock levels.</li>
+                        <li><strong>Mercari Improvements:</strong> Resolved an issue where the “Offer to Likers” feature didn’t browse all listing pages and corrected crossposting to use the original eBay listed price instead of the suggested one.</li>
+                    </ul>
+                    <div class="reactions">
+                        <span class="reaction-btn">👍</span>
+                        <span class="reaction-btn">😄</span>
+                        <span class="reaction-btn">🚀</span>
+                        <span class="reaction-btn">❤️</span>
+                        <span class="reaction-btn">✂️</span>
+                        <span class="reaction-btn">👀</span>
+                        <span class="reaction-btn">🔥</span>
+                        <span class="copy-btn">📋 Copy</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Entry 3: New Feature + Improvement (example) -->
+            <div class="entry" data-tags="newfeature improvement">
+                <div class="entry-date">10 months ago</div>
+                <div class="entry-dot"></div>
+                <div class="entry-content">
+                    <div class="version-title">Version v2.0.78</div>
+                    <div class="entry-classification">
+                        <div class="class-tag class-newfeature">✅ New Feature</div>
+                        <div class="class-tag class-improvement">✨ Improvements</div>
+                    </div>
+                    <ul class="change-list">
+                        <li><strong>New Vacation Mode:</strong> Added a global "Vacation" button to pause all automations instantly.</li>
+                        <li><strong>Enhanced Offer Templates:</strong> Users can now save and reuse custom offer messages across platforms.</li>
+                        <li><strong>Performance Boost:</strong> Optimized background tasks for faster syncing.</li>
+                    </ul>
+                    <div class="reactions">
+                        <span class="reaction-btn">👍</span>
+                        <span class="reaction-btn">😄</span>
+                        <span class="reaction-btn">🚀</span>
+                        <span class="reaction-btn">❤️</span>
+                        <span class="reaction-btn">✂️</span>
+                        <span class="reaction-btn">👀</span>
+                        <span class="reaction-btn">🔥</span>
+                        <span class="copy-btn">📋 Copy</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="powered-by">Powered by FeatureOS</div>
+</body>
+</html>

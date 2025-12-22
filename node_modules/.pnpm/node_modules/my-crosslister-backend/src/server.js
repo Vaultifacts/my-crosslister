@@ -1,113 +1,100 @@
-require('dotenv').config();
-
 const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const session = require('express-session');
-const { MongoStore } = require('connect-mongo');
-const authRoutes = require('./routes/auth');
-const inventoryRoutes = require('./routes/inventory');
+const path = require('path');
 
-const app = express();
+const server = express();
+const PORT = process.env.PORT || 5000;
 
-app.use(express.json());
-app.use(cors({ origin: true, credentials: true }));
+// View engine setup (EJS)
+server.set('view engine', 'ejs');
+server.set('views', path.join(__dirname, 'views'));
 
-// Session setup
-app.use(session({
-  secret: process.env.JWT_SECRET || 'fallback_secret_for_sessions',
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI,
-    collectionName: 'sessions',
-    ttl: 7 * 24 * 60 * 60,
-    autoRemove: 'native'
-  }),
-  cookie: {
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    httpOnly: true,
-    secure: false,
-    sameSite: 'lax'
-  }
-}));
+// Serve static files (CSS, JS, images, etc.) if you have a public folder
+server.use(express.static(path.join(__dirname, 'public')));
 
-// View engine setup
-app.set('view engine', 'ejs');
-app.set('views', __dirname + '/views');
+// Middleware for parsing body (useful if you add forms later)
+server.use(express.urlencoded({ extended: true }));
+server.use(express.json());
 
-// Login protection middleware
-const requireLogin = (req, res, next) => {
-  if (req.session.userId) {
-    next();
-  } else {
-    res.redirect('/');
-  }
+// Example user object (used in avatar button)
+// Replace this with your real authentication/session logic later
+const user = {
+    email: 'user@example.com'
 };
 
-// Root route
-app.get('/', (req, res) => {
-  if (req.session.userId) {
-    res.redirect('/inventory');
-  } else {
-    res.render('login');
-  }
+// Routes
+
+// Root route (redirects to feedback for testing)
+server.get('/', (req, res) => {
+    res.redirect('/feedback');
 });
 
-// Inventory dashboard
-app.get('/inventory', requireLogin, async (req, res) => {
-  try {
-    const Inventory = require('./models/Inventory');
-    const items = await Inventory.find({ userId: req.session.userId })
-      .sort({ createdAt: -1 })
-      .lean();
-    res.render('inventory', { items, user: { email: req.session.email } });
-  } catch (error) {
-    console.error('Error fetching inventory:', error);
-    res.status(500).send('Server error');
-  }
+// Inventory page
+server.get('/inventory', (req, res) => {
+    const items = []; // empty for now – prevents "items is not defined"
+    res.render('inventory', { user, items });
 });
 
-// Settings page
-app.get('/settings', requireLogin, (req, res) => {
-  res.render('settings', { user: { email: req.session.email } });
+server.get('/my-shops', (req, res) => {
+    res.render('my-shops', { user });
 });
 
-// My Shops page
-app.get('/my-shops', requireLogin, (req, res) => {
-  res.render('my-shops', { user: { email: req.session.email } });
+server.get('/settings', (req, res) => {
+    res.render('settings', { user });
 });
 
-// Create New Listing page
-app.get('/inventory/create', requireLogin, (req, res) => {
-  res.render('create-listing', { user: { email: req.session.email } });
+// Feedback list page
+server.get('/feedback', (req, res) => {
+    res.render('feedback', { user });
 });
 
-// Feedback form page
-app.get('/feedback', requireLogin, (req, res) => {
-  res.render('feedback', { user: { email: req.session.email } });
+// Feedback detail routes
+server.get('/feedback/depop-refresh-listings', (req, res) => {
+    res.render('feedback-detail', { user });
 });
 
-// Logout route
-app.get('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.error('Error destroying session:', err);
-      return res.redirect('/inventory');
-    }
-    res.clearCookie('connect.sid');
-    res.redirect('/');
-  });
+server.get('/feedback/adding-price-shipping', (req, res) => {
+    res.render('feedback-detail', { user });
 });
 
-// API routes (for extension)
-app.use('/api/auth', authRoutes);
-app.use('/api/inventory', inventoryRoutes);
+server.get('/feedback/:slug', (req, res) => {
+    res.render('feedback-detail', { user });
+});
 
-// MongoDB connection
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
+// Roadmap page
+server.get('/roadmap', (req, res) => {
+    res.render('roadmap', { user });
+});
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Change Log page
+server.get('/changelog', (req, res) => {
+    res.render('changelog', { user });
+});
+
+// Bugs & Fixes board page
+server.get('/bugs-fixes', (req, res) => {
+    res.render('bugs-fixes', { user });
+});
+
+// Orders page ← FIXED AND ADDED
+server.get('/orders', (req, res) => {
+    res.render('orders', { user });
+});
+
+// Catch-all 404 handler
+server.use((req, res) => {
+    res.status(404).send('<h1>404 - Page Not Found</h1><p>The page you are looking for does not exist.</p>');
+});
+
+// Start server
+server.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Available pages:`);
+    console.log(`  /feedback     - Feedback & Improvements`);
+    console.log(`  /roadmap      - Roadmap`);
+    console.log(`  /changelog    - Change Log`);
+    console.log(`  /bugs-fixes   - Bugs & Fixes board`);
+    console.log(`  /inventory    - Inventory`);
+    console.log(`  /my-shops     - My Shops`);
+    console.log(`  /settings     - Settings`);
+    console.log(`  /orders       - Orders (now working)`);
+});

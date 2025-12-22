@@ -95,6 +95,87 @@
             background: #eee;
             margin: 8px 0;
         }
+        /* Profile Dropdown */
+        .user-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: white;
+            width: 260px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 16px;
+            display: none;
+            z-index: 1000;
+        }
+        .user-dropdown.active { display: block; }
+        .user-info {
+            margin-bottom: 12px;
+        }
+        .user-info strong {
+            display: block;
+            font-size: 15px;
+        }
+        .user-info span {
+            font-size: 13px;
+            color: #666;
+        }
+        .dropdown-divider {
+            height: 1px;
+            background: #eee;
+            margin: 12px 0;
+        }
+        .dropdown-item {
+            display: block;
+            padding: 10px 0;
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .dropdown-item:hover {
+            color: #007bff;
+        }
+        .dropdown-item.logout {
+            color: #c62828;
+        }
+        /* Sidebar Popup - FIXED POSITIONING */
+        .sidebar-popup {
+            position: absolute;
+            top: 60px;
+            left: 20px;
+            background: white;
+            width: 260px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 16px;
+            display: none;
+            z-index: 1000;
+        }
+        .sidebar-popup.active { display: block; }
+        .sidebar-header {
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #666;
+        }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .sidebar-item:hover {
+            background: #f0f8ff;
+        }
+        .sidebar-item.active {
+            background: #e3f2fd;
+            font-weight: bold;
+        }
+        .sidebar-item .icon {
+            font-size: 20px;
+        }
         .main-content { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
         .page-header { font-size: 28px; margin-bottom: 30px; }
         .shops-sections {
@@ -356,7 +437,18 @@
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Sidebar popup toggle
+            // Avatar dropdown toggle
+            const avatarBtn = document.getElementById('avatar-btn');
+            const userDropdown = document.getElementById('user-dropdown');
+            if (avatarBtn && userDropdown) {
+                avatarBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    userDropdown.classList.toggle('active');
+                });
+                document.addEventListener('click', () => userDropdown.classList.remove('active'));
+            }
+
+            // Sidebar popup toggle - FIXED POSITIONING
             const hamburgerBtn = document.getElementById('hamburger-btn');
             const sidebarPopup = document.getElementById('sidebar-popup');
             if (hamburgerBtn && sidebarPopup) {
@@ -419,7 +511,7 @@
         <div class="nav-links">
             <a href="/inventory">📦 Inventory</a>
             <a href="#">📋 Tasks</a>
-            <a href="#">🛒 Orders</a>
+            <a href="/orders">🛒 Orders</a>   <!-- FIXED -->
             <a href="/my-shops" class="active">🏪 My Shops</a>
             <a href="/settings">⚙️ Settings</a>
         </div>
@@ -442,7 +534,7 @@
         <div class="help-item">Support Articles</div>
     </div>
 
-    <!-- Sidebar Popup -->
+    <!-- Sidebar Popup - FIXED -->
     <div id="sidebar-popup" class="sidebar-popup">
         <div class="sidebar-header">Switch to</div>
         <div class="sidebar-item active">
@@ -454,6 +546,20 @@
         <div class="sidebar-item">
             <span class="icon">🟦</span> eBay Automation
         </div>
+    </div>
+
+    <!-- Profile Dropdown -->
+    <div id="user-dropdown" class="user-dropdown">
+        <div class="user-info">
+            <strong>Vaultifacts Official</strong>
+            <span><%= email %></span>
+        </div>
+        <div class="dropdown-divider"></div>
+        <a href="/settings" class="dropdown-item">Settings</a>
+        <a href="#" class="dropdown-item">Plans/Billing</a>
+        <a href="#" class="dropdown-item">Affiliate Program</a>
+        <div class="dropdown-divider"></div>
+        <a href="/logout" class="dropdown-item logout">Logout</a>
     </div>
 
     <div class="main-content">

@@ -95,6 +95,49 @@
             background: #eee;
             margin: 8px 0;
         }
+        /* Profile Dropdown - ADDED AND FIXED */
+        .user-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: white;
+            width: 260px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 16px;
+            display: none;
+            z-index: 1000;
+        }
+        .user-dropdown.active { display: block; }
+        .user-info {
+            margin-bottom: 12px;
+        }
+        .user-info strong {
+            display: block;
+            font-size: 15px;
+        }
+        .user-info span {
+            font-size: 13px;
+            color: #666;
+        }
+        .dropdown-divider {
+            height: 1px;
+            background: #eee;
+            margin: 12px 0;
+        }
+        .dropdown-item {
+            display: block;
+            padding: 10px 0;
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .dropdown-item:hover {
+            color: #007bff;
+        }
+        .dropdown-item.logout {
+            color: #c62828;
+        }
         .alert-banner {
             background: #fce4ec;
             color: #c62828;
@@ -244,7 +287,6 @@
         }
         .marketplace-item:hover { background: #f0f8ff; }
         .marketplace-icon { font-size: 20px; }
-        /* Sidebar Popup */
         .sidebar-popup {
             position: absolute;
             top: 60px;
@@ -282,7 +324,6 @@
         .sidebar-item .icon {
             font-size: 20px;
         }
-        /* Auto-merge Modal */
         .auto-merge-modal {
             position: fixed;
             top: 0;
@@ -475,7 +516,6 @@
         }
         .status-listed { background: #e3f2fd; color: #1976d2; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
         .empty-message { text-align: center; padding: 40px; color: #666; }
-        /* Floating Message Button */
         .floating-message-btn {
             position: fixed;
             bottom: 30px;
@@ -498,7 +538,6 @@
             transform: scale(1.1);
             transition: all 0.2s;
         }
-        /* Chat Modal */
         .chat-modal {
             position: fixed;
             bottom: 100px;
@@ -625,7 +664,7 @@
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Avatar dropdown
+            // Avatar dropdown toggle - ADDED AND WORKING
             const avatarBtn = document.getElementById('avatar-btn');
             const userDropdown = document.getElementById('user-dropdown');
             if (avatarBtn && userDropdown) {
@@ -856,7 +895,7 @@
         <div class="nav-links">
             <a href="/inventory" class="active">📦 Inventory</a>
             <a href="#">📋 Tasks</a>
-            <a href="#">🛒 Orders</a>
+            <a href="/orders">🛒 Orders</a>
             <a href="/my-shops">🏪 My Shops</a>
             <a href="/settings">⚙️ Settings</a>
         </div>
@@ -893,6 +932,7 @@
         </div>
     </div>
 
+    <!-- Profile Dropdown - FIXED -->
     <div id="user-dropdown" class="user-dropdown">
         <div class="user-info">
             <strong>Vaultifacts Official</strong>

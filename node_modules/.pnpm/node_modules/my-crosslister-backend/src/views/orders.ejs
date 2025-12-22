@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Crosslister - Create New Listing</title>
+    <title>My Crosslister - Orders</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; margin: 0; background: #f9fafb; color: #333; }
         .top-nav {
@@ -68,6 +68,7 @@
             cursor: pointer;
             border: none;
         }
+        /* Help Dropdown */
         .help-dropdown {
             position: absolute;
             top: 60px;
@@ -95,105 +96,222 @@
             background: #eee;
             margin: 8px 0;
         }
-        .main-content { padding: 40px 20px; max-width: 1000px; margin: 0 auto; }
-        .page-header { font-size: 28px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .action-buttons {
-            display: flex;
-            gap: 12px;
-        }
-        .btn-draft {
-            background: #6c757d;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .btn-create {
-            background: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .section {
-            margin-bottom: 40px;
-        }
-        .section-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .upload-area {
-            border: 2px dashed #ddd;
+        /* Profile Dropdown */
+        .user-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: white;
+            width: 260px;
             border-radius: 8px;
-            padding: 40px;
-            text-align: center;
-            background: #f8f9fa;
-            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 16px;
+            display: none;
+            z-index: 1000;
         }
-        .upload-area p {
+        .user-dropdown.active { display: block; }
+        .user-info {
+            margin-bottom: 12px;
+        }
+        .user-info strong {
+            display: block;
+            font-size: 15px;
+        }
+        .user-info span {
+            font-size: 13px;
             color: #666;
-            margin: 8px 0;
         }
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+        .dropdown-divider {
+            height: 1px;
+            background: #eee;
+            margin: 12px 0;
         }
-        .full-width {
-            grid-column: 1 / -1;
+        .dropdown-item {
+            display: block;
+            padding: 10px 0;
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
         }
-        .form-group {
-            display: flex;
-            flex-direction: column;
+        .dropdown-item:hover {
+            color: #007bff;
         }
-        .form-group label {
-            margin-bottom: 8px;
-            font-weight: 500;
+        .dropdown-item.logout {
+            color: #c62828;
         }
-        .form-group input, .form-group select, .form-group textarea {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        /* Sidebar Popup */
+        .sidebar-popup {
+            position: absolute;
+            top: 60px;
+            left: 20px;
+            background: white;
+            width: 260px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 16px;
+            display: none;
+            z-index: 1000;
         }
-        .form-group textarea {
-            height: 120px;
-            resize: vertical;
+        .sidebar-popup.active { display: block; }
+        .sidebar-header {
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #666;
         }
-        .price-group {
-            display: flex;
-            gap: 10px;
-        }
-        .marketplace-links {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 16px;
-        }
-        .marketplace-link {
+        .sidebar-item {
             display: flex;
             align-items: center;
             gap: 12px;
             padding: 12px;
-            background: white;
-            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .sidebar-item:hover {
+            background: #f0f8ff;
+        }
+        .sidebar-item.active {
+            background: #e3f2fd;
+            font-weight: bold;
+        }
+        .sidebar-item .icon {
+            font-size: 20px;
+        }
+        .alert-banner {
+            background: #fce4ec;
+            color: #c62828;
+            padding: 12px 20px;
+            text-align: center;
+            font-size: 14px;
+            margin: 20px 20px 0;
             border-radius: 8px;
+            border: 1px solid #ffcdd2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
-        .marketplace-link .icon {
+        .alert-banner .exclamation {
+            background: #c62828;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .alert-banner a {
+            background: #c62828;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .main-content {
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .page-header {
             font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
         }
-        .marketplace-link input {
-            flex: 1;
-            padding: 8px;
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .search-bar {
+            padding: 10px 14px;
+            width: 400px;
             border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .icon-btn span {
+            font-size: 14px;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        thead {
+            background: #f8f9fa;
+        }
+        th {
+            padding: 14px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #444;
+            font-size: 14px;
+        }
+        td {
+            padding: 16px 12px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+        tr:hover {
+            background: #f5faff;
+        }
+        .order-image {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
             border-radius: 4px;
         }
-        /* Floating Message Button */
+        .order-name {
+            font-weight: 500;
+        }
+        .bundle-badge {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .marketplace-badge {
+            background: #f3e5f5;
+            color: #7b1fa2;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .sold-date {
+            color: #666;
+            font-size: 14px;
+        }
         .floating-message-btn {
             position: fixed;
             bottom: 30px;
@@ -216,7 +334,6 @@
             transform: scale(1.1);
             transition: all 0.2s;
         }
-        /* Chat Modal */
         .chat-modal {
             position: fixed;
             bottom: 100px;
@@ -343,6 +460,32 @@
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Avatar dropdown toggle
+            const avatarBtn = document.getElementById('avatar-btn');
+            const userDropdown = document.getElementById('user-dropdown');
+            if (avatarBtn && userDropdown) {
+                avatarBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    userDropdown.classList.toggle('active');
+                });
+                document.addEventListener('click', () => userDropdown.classList.remove('active'));
+            }
+
+            // Help dropdown toggle - NOW ADDED
+            const helpBtn = document.getElementById('help-btn');
+            const helpDropdown = document.getElementById('help-dropdown');
+            if (helpBtn && helpDropdown) {
+                helpBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    helpDropdown.classList.toggle('active');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!helpDropdown.contains(e.target) && e.target !== helpBtn) {
+                        helpDropdown.classList.remove('active');
+                    }
+                });
+            }
+
             // Sidebar popup toggle
             const hamburgerBtn = document.getElementById('hamburger-btn');
             const sidebarPopup = document.getElementById('sidebar-popup');
@@ -354,21 +497,6 @@
                 document.addEventListener('click', (e) => {
                     if (!sidebarPopup.contains(e.target) && e.target !== hamburgerBtn) {
                         sidebarPopup.classList.remove('active');
-                    }
-                });
-            }
-
-            // Help dropdown toggle
-            const helpBtn = document.getElementById('help-btn');
-            const helpDropdown = document.getElementById('help-dropdown');
-            if (helpBtn && helpDropdown) {
-                helpBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    helpDropdown.classList.toggle('active');
-                });
-                document.addEventListener('click', (e) => {
-                    if (!helpDropdown.contains(e.target) && e.target !== helpBtn) {
-                        helpDropdown.classList.remove('active');
                     }
                 });
             }
@@ -406,7 +534,7 @@
         <div class="nav-links">
             <a href="/inventory">📦 Inventory</a>
             <a href="#">📋 Tasks</a>
-            <a href="#">🛒 Orders</a>
+            <a href="/orders" class="active">🛒 Orders</a>
             <a href="/my-shops">🏪 My Shops</a>
             <a href="/settings">⚙️ Settings</a>
         </div>
@@ -419,7 +547,7 @@
         </div>
     </div>
 
-    <!-- Help Dropdown -->
+    <!-- Help Dropdown - NOW ADDED -->
     <div id="help-dropdown" class="help-dropdown">
         <div class="help-item">Report Bug</div>
         <div class="help-item" onclick="window.location.href='/feedback'">Submit Feedback</div>
@@ -443,137 +571,79 @@
         </div>
     </div>
 
+    <!-- Profile Dropdown -->
+    <div id="user-dropdown" class="user-dropdown">
+        <div class="user-info">
+            <strong>Vaultifacts Official</strong>
+            <span><%= email %></span>
+        </div>
+        <div class="dropdown-divider"></div>
+        <a href="/settings" class="dropdown-item">Settings</a>
+        <a href="#" class="dropdown-item">Plans/Billing</a>
+        <a href="#" class="dropdown-item">Affiliate Program</a>
+        <div class="dropdown-divider"></div>
+        <a href="/logout" class="dropdown-item logout">Logout</a>
+    </div>
+
+    <div class="alert-banner">
+        <div class="exclamation">!</div>
+        Attention! Extension is not installed on your browser. To use PrimeLister, please install the extension.
+        <a href="#">Install Extension</a>
+    </div>
+
     <div class="main-content">
-        <div class="page-header">
-            <div>Create New Listing</div>
-            <div class="action-buttons">
-                <button class="btn-draft">Save as Draft</button>
-                <button class="btn-create">Create Listing</button>
+        <div class="page-header">Orders</div>
+
+        <div class="toolbar">
+            <input type="text" class="search-bar" placeholder="Search product name, SKU or internal note...">
+            <div class="toolbar-right">
+                <button class="icon-btn"><span>Fullscreen</span></button>
+                <button class="icon-btn"><span>Refresh</span></button>
             </div>
         </div>
 
-        <div class="section">
-            <div class="section-title">📸 Photos & video</div>
-            <p style="color:#666; margin-bottom: 16px;">Add up to 20 photos & 1 video.</p>
-            <div class="upload-area">
-                <p style="font-size: 40px; color: #ddd;">+</p>
-                <p>Drag & drop photos here</p>
-                <p>or browse files (Max size: 10MB each)</p>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">📦 Item Details</div>
-            <p style="color:#666; margin-bottom: 20px;">Fill in the required fields marked with an asterisk (*). Other fields are optional but recommended for better listing quality.</p>
-            <div class="form-grid">
-                <div class="form-group full-width">
-                    <label>Title *</label>
-                    <input type="text" placeholder="Enter item title">
-                </div>
-
-                <div class="form-group full-width">
-                    <label>Price (Optional)</label>
-                    <div class="price-group">
-                        <input type="text" placeholder="0.00">
-                        <select>
-                            <option>USD - US Dollar</option>
-                            <option>CAD - Canadian Dollar</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group full-width">
-                    <label>Description (Optional)</label>
-                    <textarea placeholder="Describe your item"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>SKU</label>
-                    <input type="text" placeholder="Enter SKU">
-                </div>
-
-                <div class="form-group">
-                    <label>Size *</label>
-                    <input type="text" placeholder="Enter size">
-                </div>
-
-                <div class="form-group">
-                    <label>Select tags</label>
-                    <input type="text" placeholder="Select or add tags">
-                </div>
-
-                <div class="form-group full-width">
-                    <label>Internal Note</label>
-                    <textarea placeholder="Add internal note"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>Status</label>
-                    <select>
-                        <option value="draft">Draft</option>
-                        <option value="listed" selected>Listed</option>
-                        <option value="sold">Sold</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">🔗 Listing Links</div>
-            <p style="color:#666; margin-bottom: 20px;">Add links to the original listing on each marketplace you're listing on.</p>
-            <div class="marketplace-links">
-                <div class="marketplace-link">
-                    <span class="icon">🔴</span>
-                    <span>Depop</span>
-                    <input type="text" placeholder="Enter your Depop listing link here">
-                </div>
-                <div class="marketplace-link">
-                    <span class="icon">🟦</span>
-                    <span>eBay (US)</span>
-                    <input type="text" placeholder="Enter your eBay (US) listing link here">
-                </div>
-                <div class="marketplace-link">
-                    <span class="icon">🟦</span>
-                    <span>eBay (CA)</span>
-                    <input type="text" placeholder="Enter your eBay (CA) listing link here">
-                </div>
-                <div class="marketplace-link">
-                    <span class="icon">🧵</span>
-                    <span>Etsy</span>
-                    <input type="text" placeholder="Enter your Etsy listing link here">
-                </div>
-                <div class="marketplace-link">
-                    <span class="icon">🛒</span>
-                    <span>Shopify</span>
-                    <input type="text" placeholder="Enter your Shopify listing link here">
-                </div>
-                <div class="marketplace-link">
-                    <span class="icon">📘</span>
-                    <span>Facebook</span>
-                    <input type="text" placeholder="Enter your Facebook listing link here">
-                </div>
-                <div class="marketplace-link">
-                    <span class="icon">⚫</span>
-                    <span>Grailed</span>
-                    <input type="text" placeholder="Enter your Grailed listing link here">
-                </div>
-                <div class="marketplace-link">
-                    <span class="icon">🛍️</span>
-                    <span>Mercari</span>
-                    <input type="text" placeholder="Enter your Mercari listing link here">
-                </div>
-                <div class="marketplace-link">
-                    <span class="icon">👚</span>
-                    <span>Poshmark (CA)</span>
-                    <input type="text" placeholder="Enter your Poshmark (CA) listing link here">
-                </div>
-                <div class="marketplace-link">
-                    <span class="icon">👚</span>
-                    <span>Poshmark (US)</span>
-                    <input type="text" placeholder="Enter your Poshmark (US) listing link here">
-                </div>
-            </div>
-        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Marketplace</th>
+                    <th>Sold On</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><img src="https://via.placeholder.com/50" alt="Product" class="order-image"></td>
+                    <td class="order-name">Brand New USB C 3-in-1 Hub Adapter 4K HDMI USB 3.0 PD Charging Multiport Dongle</td>
+                    <td>CAD12</td>
+                    <td><span class="marketplace-badge">Poshmark (US)</span></td>
+                    <td class="sold-date">19 Dec 2025</td>
+                </tr>
+                <tr>
+                    <td><img src="https://via.placeholder.com/50" alt="Product" class="order-image"></td>
+                    <td class="order-name">Brand New USB C 3-in-1 Hub Adapter 4K HDMI USB 3.0 PD Charging Multiport Dongle</td>
+                    <td>CAD12</td>
+                    <td><span class="marketplace-badge">Poshmark (CA)</span></td>
+                    <td class="sold-date">19 Dec 2025</td>
+                </tr>
+                <tr>
+                    <td><img src="https://via.placeholder.com/50" alt="Product" class="order-image"></td>
+                    <td class="order-name">Bundle of Brand New Loose Pokemon White... and 1 more item</td>
+                    <td>CAD68</td>
+                    <td><span class="bundle-badge">Bundle</span> <span class="marketplace-badge">Poshmark (CA)</span></td>
+                    <td class="sold-date">01 Dec 2025</td>
+                </tr>
+                <tr>
+                    <td><img src="https://via.placeholder.com/50" alt="Product" class="order-image"></td>
+                    <td class="order-name">Bundle of Brand New Loose Pokemon White... and 1 more item</td>
+                    <td>CAD68</td>
+                    <td><span class="bundle-badge">Bundle</span> <span class="marketplace-badge">Poshmark (US)</span></td>
+                    <td class="sold-date">01 Dec 2025</td>
+                </tr>
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
     </div>
 
     <!-- Floating Message Button -->

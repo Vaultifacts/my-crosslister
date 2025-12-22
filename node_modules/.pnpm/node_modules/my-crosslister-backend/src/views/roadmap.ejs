@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadmap - PrimeLister</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; margin: 0; background: #f9fafb; color: #333; }
+        .top-nav {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .logo { font-weight: bold; font-size: 20px; color: #007bff; }
+        .auth-buttons { display: flex; gap: 10px; }
+        .auth-btn { padding: 8px 16px; border: 1px solid #ddd; border-radius: 6px; background: white; cursor: pointer; }
+        .auth-btn.primary { background: #007bff; color: white; border: none; }
+        .sub-nav {
+            background: white;
+            padding: 10px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        .sub-nav a {
+            text-decoration: none;
+            color: #555;
+            font-size: 15px;
+            padding: 8px 0;
+            white-space: nowrap;
+        }
+        .sub-nav a.active {
+            color: #007bff;
+            font-weight: bold;
+            border-bottom: 3px solid #007bff;
+        }
+        .main-content {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .page-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .filters {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            font-size: 14px;
+        }
+        .columns {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        .column {
+            flex: 1;
+            min-width: 300px;
+        }
+        .column-header {
+            font-weight: bold;
+            font-size: 16px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            color: white;
+        }
+        .planned-header { background: #f8d7da; color: #721c24; }
+        .inprogress-header { background: #fff3cd; color: #856404; }
+        .completed-header { background: #d4edda; color: #155724; }
+        .roadmap-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .card-votes {
+            font-weight: bold;
+            font-size: 20px;
+            color: #444;
+            min-width: 40px;
+        }
+        .card-vote-arrow {
+            font-size: 16px;
+            color: #999;
+            cursor: pointer;
+        }
+        .card-content {
+            flex: 1;
+        }
+        .card-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .card-board {
+            font-size: 13px;
+            color: #666;
+        }
+        .powered-by {
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            margin-top: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-nav">
+        <div class="logo">PL PrimeLister</div>
+        <div class="auth-buttons">
+            <button class="auth-btn">Sign in</button>
+            <button class="auth-btn primary">Sign up</button>
+        </div>
+    </div>
+
+    <div class="sub-nav">
+        <a href="/feedback">📝 FEEDBACK & IMPROVEMENTS 🎁</a>
+        <a href="/roadmap" class="active">🛣️ ROADMAP</a>
+        <a href="/changelog">📜 CHANGE LOG</a>
+    </div>
+
+    <div class="main-content">
+        <div class="page-title">Roadmaps</div>
+
+        <div class="filters">
+            <select class="filter-select">
+                <option>Group by Status</option>
+            </select>
+            <select class="filter-select">
+                <option>Select tag</option>
+            </select>
+            <select class="filter-select">
+                <option>Show all</option>
+            </select>
+        </div>
+
+        <div class="columns">
+            <!-- Planned Column -->
+            <div class="column">
+                <div class="column-header planned-header">Planned</div>
+                <div class="roadmap-card">
+                    <div class="card-votes">
+                        <div class="card-vote-arrow">↑</div>
+                        62
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title">Depop refresh listings</div>
+                        <div class="card-board">Feedback & Improvements 🎁</div>
+                    </div>
+                </div>
+                <div class="roadmap-card">
+                    <div class="card-votes">
+                        <div class="card-vote-arrow">↑</div>
+                        50
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title">Adding Price and Shipping Information on Crosslist</div>
+                        <div class="card-board">Feedback & Improvements 🎁</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- In Progress Column -->
+            <div class="column">
+                <div class="column-header inprogress-header">In Progress</div>
+                <div class="roadmap-card">
+                    <div class="card-votes">
+                        <div class="card-vote-arrow">↑</div>
+                        19
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title">Whatnot Marketplace Support</div>
+                        <div class="card-board">Feedback & Improvements 🎁</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completed Column -->
+            <div class="column">
+                <div class="column-header completed-header">Completed</div>
+                <div class="roadmap-card">
+                    <div class="card-votes">
+                        <div class="card-vote-arrow">↑</div>
+                        1
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title">This is a request to add the ability to manually deselect or exclude specifi...</div>
+                        <div class="card-board">Feedback & Improvements 🎁</div>
+                    </div>
+                </div>
+                <div class="roadmap-card">
+                    <div class="card-votes">
+                        <div class="card-vote-arrow">↑</div>
+                        2
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title">Set Default Home Page</div>
+                        <div class="card-board">Feedback & Improvements 🎁</div>
+                    </div>
+                </div>
+                <div class="roadmap-card">
+                    <div class="card-votes">
+                        <div class="card-vote-arrow">↑</div>
+                        4
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title">Option to Exclude Specific Listings from Automation Actions</div>
+                        <div class="card-board">Feedback & Improvements 🎁</div>
+                    </div>
+                </div>
+                <div class="roadmap-card">
+                    <div class="card-votes">
+                        <div class="card-vote-arrow">↑</div>
+                        4
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title">Enhance Bulk offers to likers</div>
+                        <div class="card-board">Feedback & Improvements 🎁</div>
+                    </div>
+                </div>
+                <div class="roadmap-card">
+                    <div class="card-votes">
+                        <div class="card-vote-arrow">↑</div>
+                        1
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title">Enhance return sharing times.</div>
+                        <div class="card-board">Feedback & Improvements 🎁</div>
+                    </div>
+                </div>
+                <div class="roadmap-card">
+                    <div class="card-votes">
+                        <div class="card-vote-arrow">↑</div>
+                        5
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title">Vacation button or Deactivate All Automations button</div>
+                        <div class="card-board">Feedback & Improvements 🎁</div>
+                    </div>
+                </div>
+                <div class="roadmap-card">
+                    <div class="card-votes">
+                        <div class="card-vote-arrow">↑</div>
+                        4
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title">Adding a category filter for offers to likers</div>
+                        <div class="card-board">Feedback & Improvements 🎁</div>
+                    </div>
+                </div>
+                <div class="roadmap-card">
+                    <div class="card-votes">
+                        <div class="card-vote-arrow">↑</div>
+                        4
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title">Conditional Offer to Likers Based on Discount Status</div>
+                        <div class="card-board">Feedback & Improvements 🎁</div>
+                    </div>
+                </div>
+                <div class="roadmap-card">
+                    <div class="card-votes">
+                        <div class="card-vote-arrow">↑</div>
+                        4
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title">Additional Conditions for Offer to Likers</div>
+                        <div class="card-board">Feedback & Improvements 🎁</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="powered-by">Powered by FeatureOS</div>
+</body>
+</html>

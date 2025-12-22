@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bugs & Fixes - PrimeLister</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; margin: 0; background: #f9fafb; color: #333; }
+        .top-nav {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .logo { font-weight: bold; font-size: 20px; color: #007bff; }
+        .auth-buttons { display: flex; gap: 10px; }
+        .auth-btn { padding: 8px 16px; border: 1px solid #ddd; border-radius: 6px; background: white; cursor: pointer; }
+        .auth-btn.primary { background: #007bff; color: white; border: none; }
+        .sub-nav {
+            background: white;
+            padding: 10px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        .sub-nav a {
+            text-decoration: none;
+            color: #555;
+            font-size: 15px;
+            padding: 8px 0;
+            white-space: nowrap;
+        }
+        .sub-nav a.active {
+            color: #007bff;
+            font-weight: bold;
+            border-bottom: 3px solid #007bff;
+        }
+        .main-content {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 40px;
+        }
+        .board-main {
+            flex: 2;
+        }
+        .board-header {
+            background: #f8f9fa;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        .board-title {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .board-subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+        .controls-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        .filter-select {
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            font-size: 14px;
+        }
+        .search-bar {
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            width: 320px;
+            font-size: 14px;
+        }
+        .submit-bug-btn {
+            background: #343a40;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+        .empty-icon {
+            font-size: 48px;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+        .empty-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #444;
+        }
+        .empty-text {
+            color: #666;
+            margin-bottom: 30px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        .sidebar {
+            flex: 1;
+            min-width: 280px;
+        }
+        .boards-header {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .board-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .board-item.active {
+            background: white;
+            border: 2px solid #007bff;
+            font-weight: bold;
+        }
+        .board-item .plus {
+            margin-left: auto;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .powered-by {
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            margin-top: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-nav">
+        <div class="logo">PL PrimeLister</div>
+        <div class="auth-buttons">
+            <button class="auth-btn">Sign in</button>
+            <button class="auth-btn primary">Sign up</button>
+        </div>
+    </div>
+
+    <div class="sub-nav">
+        <a href="/feedback">📝 FEEDBACK & IMPROVEMENTS 🎁</a>
+        <a href="/roadmap">🛣️ ROADMAP</a>
+        <a href="/changelog">📜 CHANGE LOG</a>
+    </div>
+
+    <div class="main-content">
+        <div class="board-main">
+            <div class="board-header">
+                <div class="board-title">🐛 Bugs & Fixes 🔧</div>
+                <div class="board-subtitle">You can report bugs to us on this board.</div>
+            </div>
+
+            <div class="controls-row">
+                <select class="filter-select">
+                    <option>Popular</option>
+                </select>
+                <select class="filter-select">
+                    <option>Select tag</option>
+                </select>
+                <input type="text" class="search-bar" placeholder="Search for posts...">
+                <button class="submit-bug-btn">🐛 Submit Bug</button>
+            </div>
+
+            <div class="empty-state">
+                <div class="empty-icon">≡<br>+</div>
+                <div class="empty-title">We're excited to have you here!</div>
+                <div class="empty-text">
+                    This Board doesn't have any submissions yet. Lead the way and submit a post now!
+                </div>
+                <button class="submit-bug-btn">🐛 Submit Bug</button>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="boards-header">Boards</div>
+            <div class="board-item">
+                📝 Feedback & Improvements 🎁
+                <span class="plus">+</span>
+            </div>
+            <div class="board-item active">
+                🐛 Bugs & Fixes 🔧
+                <span class="plus">+</span>
+            </div>
+            <div class="powered-by">Powered by FeatureOS</div>
+        </div>
+    </div>
+</body>
+</html>

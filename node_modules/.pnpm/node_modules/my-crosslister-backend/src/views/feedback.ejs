@@ -129,7 +129,7 @@
         .feedback-subtitle {
             color: #666;
             font-size: 16px;
-            margin-left: 36px; /* aligns with title text */
+            margin-left: 36px;
         }
         .controls-row {
             display: flex;
@@ -164,11 +164,6 @@
             align-items: center;
             gap: 8px;
         }
-        .feedback-post-link {
-            display: block;
-            text-decoration: none;
-            color: inherit;
-        }
         .feedback-post {
             background: white;
             border: 1px solid #e0e0e0;
@@ -176,10 +171,10 @@
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-            transition: background 0.2s;
+            transition: box-shadow 0.2s;
         }
         .feedback-post:hover {
-            background: #f8fbff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         .post-votes {
             font-size: 28px;
@@ -279,7 +274,6 @@
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Sidebar popup toggle
             const hamburgerBtn = document.getElementById('hamburger-btn');
             const sidebarPopup = document.getElementById('sidebar-popup');
             if (hamburgerBtn && sidebarPopup) {
@@ -294,7 +288,6 @@
                 });
             }
 
-            // Help dropdown toggle
             const helpBtn = document.getElementById('help-btn');
             const helpDropdown = document.getElementById('help-dropdown');
             if (helpBtn && helpDropdown) {
@@ -333,7 +326,6 @@
         </div>
     </div>
 
-    <!-- Help Dropdown -->
     <div id="help-dropdown" class="help-dropdown">
         <div class="help-item">Report Bug</div>
         <div class="help-item" onclick="window.location.href='/feedback'">Submit Feedback</div>
@@ -343,7 +335,6 @@
         <div class="help-item">Support Articles</div>
     </div>
 
-    <!-- Sidebar Popup -->
     <div id="sidebar-popup" class="sidebar-popup">
         <div class="sidebar-header">Switch to</div>
         <div class="sidebar-item active">
@@ -381,8 +372,8 @@
                 </div>
             </div>
 
-            <!-- Feedback posts -->
-            <a href="/feedback-detail/depop-refresh-listings" target="_blank" class="feedback-post-link">
+            <!-- Clickable feedback posts (example – add more as needed) -->
+            <a href="/feedback/depop-refresh-listings" style="text-decoration: none; color: inherit;">
                 <div class="feedback-post">
                     <div class="post-votes">
                         <span class="post-votes-arrow">↑</span> 62
@@ -399,7 +390,7 @@
                 </div>
             </a>
 
-            <a href="/feedback-detail/adding-price-and-shipping-information-on-crosslist" target="_blank" class="feedback-post-link">
+            <a href="/feedback/adding-price-shipping" style="text-decoration: none; color: inherit;">
                 <div class="feedback-post">
                     <div class="post-votes">
                         <span class="post-votes-arrow">↑</span> 50
@@ -416,105 +407,22 @@
                 </div>
             </a>
 
-            <a href="/feedback-detail/merging-items-together-automatically" target="_blank" class="feedback-post-link">
-                <div class="feedback-post">
-                    <div class="post-votes">
-                        <span class="post-votes-arrow">↑</span> 34
-                    </div>
-                    <div class="post-title">merging items together automatically</div>
-                    <div class="post-preview">
-                        when importing listings to primelister in my case i have already cross listed a good portion of my items so when i import them to the inventory the items are coming up technically in duplicates and...
-                    </div>
-                    <div class="post-tags">
-                        <span class="tag tag-in-review">In Review</span>
-                        <span class="tag tag-feedback">Feedback & Improvements 📝</span>
-                        <span class="post-comments">3 💬</span>
-                    </div>
-                </div>
-            </a>
-
-            <a href="/feedback-detail/crucial-poshmark-share-follow-from-feed" target="_blank" class="feedback-post-link">
-                <div class="feedback-post">
-                    <div class="post-votes">
-                        <span class="post-votes-arrow">↑</span> 32
-                    </div>
-                    <div class="post-title">Crucial - Poshmark Share & Follow from feed (Important to reach new buyers)</div>
-                    <div class="post-preview">
-                        Please introduce feature that allows sharing & follow from feed. Not from the main feed (people already following you) but from the search page like search, notification page etc. This is...
-                    </div>
-                    <div class="post-tags">
-                        <span class="tag tag-feedback">Feedback & Improvements 📝</span>
-                    </div>
-                </div>
-            </a>
-
-            <a href="/feedback-detail/support-vinted-marketplace-and-message-management-system" target="_blank" class="feedback-post-link">
-                <div class="feedback-post">
-                    <div class="post-votes">
-                        <span class="post-votes-arrow">↑</span> 30
-                    </div>
-                    <div class="post-title">Support Vinted Marketplace and message management system</div>
-                    <div class="post-preview">
-                        It would be a great idea to add vinted & maybe a section for all messages received of all linked marketplaces
-                    </div>
-                    <div class="post-tags">
-                        <span class="tag tag-in-review">In Review</span>
-                        <span class="tag tag-feedback">Feedback & Improvements 📝</span>
-                        <span class="post-comments">3 💬</span>
-                    </div>
-                </div>
-            </a>
-
-            <a href="/feedback-detail/curtsy-cross-listing-supports" target="_blank" class="feedback-post-link">
-                <div class="feedback-post">
-                    <div class="post-votes">
-                        <span class="post-votes-arrow">↑</span> 30
-                    </div>
-                    <div class="post-title">Curtsy cross-listing supports</div>
-                    <div class="post-preview">
-                        I would love to see Curtsy added as platforms to cross list to please and thank you!
-                    </div>
-                    <div class="post-tags">
-                        <span class="tag tag-in-review">In Review</span>
-                        <span class="tag tag-feedback">Feedback & Improvements 📝</span>
-                        <span class="post-comments">1 💬</span>
-                    </div>
-                </div>
-            </a>
-
-            <a href="/feedback-detail/reseller-research-tool" target="_blank" class="feedback-post-link">
-                <div class="feedback-post">
-                    <div class="post-votes">
-                        <span class="post-votes-arrow">↑</span> 26
-                    </div>
-                    <div class="post-title">Reseller research tool</div>
-                    <div class="post-preview">
-                        a research tool that would research the price of the item you are listing across all platforms, both open and sold listings that would be awesome. I waste so much time researching each item for eac...
-                    </div>
-                    <div class="post-tags">
-                        <span class="tag tag-in-review">In Review</span>
-                        <span class="tag tag-feedback">Feedback & Improvements 📝</span>
-                        <span class="post-comments">1 💬</span>
-                    </div>
-                </div>
-            </a>
+            <!-- Add more posts here if needed -->
         </div>
 
         <div class="sidebar">
-            <div class="boards-header">
-                Boards
-            </div>
+            <div class="boards-header">Boards</div>
             <div class="board-item active">
-                📝 Feedback & Improvements
+                📝 Feedback & Improvements 🎁
                 <span class="plus">+</span>
             </div>
-            <div class="board-item">
-                🐛 Bugs & Fixes
-                <span class="plus">+</span>
-            </div>
-            <div class="powered-by">
-                Powered by FeatureOS
-            </div>
+            <a href="/bugs-fixes" style="text-decoration: none; color: inherit;">
+                <div class="board-item">
+                    🐛 Bugs & Fixes 🔧
+                    <span class="plus">+</span>
+                </div>
+            </a>
+            <div class="powered-by">Powered by FeatureOS</div>
         </div>
     </div>
 </body>

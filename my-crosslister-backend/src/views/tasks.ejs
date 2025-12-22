@@ -1,0 +1,82 @@
+<%- include('partials/header') %> <!-- Assumes you have partials for shared components -->
+
+<body>
+  <%- include('partials/sidebar') %>
+  <%- include('partials/topnav', { active: 'tasks' }) %> <!-- Pass active page for highlighting -->
+
+  <div class="main-content">
+    <div class="page-header">
+      <h1>Tasks</h1>
+      <p>View and manage your automation tasks, including cross-listing, relisting, and scheduled jobs.</p>
+    </div>
+
+    <!-- Filters Bar -->
+    <div class="filters-bar">
+      <input type="text" placeholder="Search tasks..." class="search-input">
+      <select class="status-filter">
+        <option>All</option>
+        <option>Running</option>
+        <option>Completed</option>
+        <option>Failed</option>
+        <option>Scheduled</option>
+      </select>
+      <button class="btn-primary">Apply Filters</button>
+    </div>
+
+    <!-- Tasks Table -->
+    <% if (tasks.length > 0) { %>
+      <table class="tasks-table">
+        <thead>
+          <tr>
+            <th>Task ID</th>
+            <th>Type</th>
+            <th>Items</th>
+            <th>Status</th>
+            <th>Started At</th>
+            <th>Completed At</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% tasks.forEach(task => { %>
+            <tr>
+              <td><%= task.id %></td>
+              <td><%= task.type %></td>
+              <td><%= task.items %></td>
+              <td>
+                <span class="status-badge <%= task.status.toLowerCase().replace(' ', '-') %>">
+                  <%= task.status %>
+                </span>
+              </td>
+              <td><%= task.started || '-' %></td>
+              <td><%= task.completed || '-' %></td>
+              <td>
+                <button class="btn-small">View Log</button>
+                <% if (task.status === 'Failed') { %>
+                  <button class="btn-small retry">Retry</button>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <div class="empty-state">
+        <p>No tasks found. Start a cross-listing or relisting job to see history here.</p>
+      </div>
+    <% } %>
+
+    <!-- Pagination placeholder -->
+    <div class="pagination">
+      <button disabled>&laquo; Previous</button>
+      <span>Page 1 of 1</span>
+      <button disabled>Next &raquo;</button>
+    </div>
+  </div>
+
+  <%- include('partials/chat-modal') %>
+  <%- include('partials/help-dropdown') %> <!-- If separate -->
+
+  <script src="/js/main.js"></script> <!-- Your shared JS for modals, etc. -->
+</body>
+</html>
