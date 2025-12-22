@@ -1,0 +1,21 @@
+{
+  "name": "my-crosslister-extension",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "plasmo dev",
+    "build": "plasmo build"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "concurrently": "^8.2.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@plasmohq/storage": "^1.15.0",
+    "@types/chrome": "^0.1.32",
+    "plasmo": "0.90.5",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  }
+}

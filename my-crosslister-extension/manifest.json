@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "My Crosslister",
+  "version": "1.0.0",
+  "description": "Tool for cross-listing and managing inventory across marketplaces.",
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "32": "assets/icons/icon32.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.poshmark.com/*",
+        "*://*.ebay.com/*",
+        "*://*.mercari.com/*",
+        "*://*.etsy.com/*",
+        "*://*.depop.com/*"
+      ],
+      "js": ["contents/marketplaces.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://poshmark.ca/create-listing*"],
+      "js": ["contents/poshmark-crosslist.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": ["storage", "tabs"]
+}

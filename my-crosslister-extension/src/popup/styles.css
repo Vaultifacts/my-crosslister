@@ -1,0 +1,54 @@
+.popup-container {
+  width: 400px;
+  height: 600px;
+  overflow-y: auto;
+  background-color: #1e1e1e;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  padding: 10px;
+}
+
+.header {
+  background: linear-gradient(to right, #333, #555);
+  padding: 10px;
+  text-align: center;
+  font-size: 18px;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-around;
+  margin: 10px 0;
+}
+
+.actions button {
+  background: #444;
+  color: #fff;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.inventory-panel {
+  border-top: 1px solid #555;
+  padding-top: 10px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin: 5px 0;
+}
+
+.tasks {
+  margin-top: 20px;
+}
+
+footer {
+  text-align: center;
+  font-size: 12px;
+  margin-top: 20px;
+}

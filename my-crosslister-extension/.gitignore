@@ -1,0 +1,19 @@
+# Plasmo/Parcel cache – never commit these
+.plasmo/
+.parcel-cache/
+.cache/
+
+# General build/output
+build/
+dist/
+
+# Node modules (already likely ignored at root, but safe here)
+node_modules/
+
+# Environment files
+.env
+.env.local
+
+# OS/filesystem junk
+.DS_Store
+Thumbs.db
