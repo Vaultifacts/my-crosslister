@@ -1,10 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
-const MongoStore = require('connect-mongo');
+const MongoStore = require('connect-mongo');  // No (session) here
 const path = require('path');
-const authRoutes = require('./routes/auth');          // Fixed path
-const inventoryRoutes = require('./routes/inventory'); // Fixed path
+const authRoutes = require('./routes/auth');          // Correct relative path
+const inventoryRoutes = require('./routes/inventory'); // Correct relative path
 
 const app = express();
 
@@ -12,8 +12,8 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));                    // Fixed: points to src/views
-app.use(express.static(path.join(__dirname, '../public')));         // Fixed: public is one level up from src
+app.set('views', path.join(__dirname, 'views'));                    // Points to src/views
+app.use(express.static(path.join(__dirname, '../public')));         // public is one level up
 
 // MongoDB Connection
 mongoose.connect('mongodb://localhost:27017/crosslister', {
@@ -23,13 +23,13 @@ mongoose.connect('mongodb://localhost:27017/crosslister', {
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-// Session with connect-mongo v5+ syntax
+// Session with connect-mongo v4+ / v5+ syntax
 app.use(
   session({
     secret: 'your-secret-key',
     resave: false,
     saveUninitialized: false,
-    store: new MongoStore({               // Fixed: new MongoStore() instead of MongoStore.create()
+    store: MongoStore.create({          // Fixed: MongoStore.create()
       mongoUrl: 'mongodb://localhost:27017/crosslister',
       collectionName: 'sessions'
     }),
