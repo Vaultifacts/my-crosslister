@@ -455,169 +455,230 @@
             border: none;
             cursor: pointer;
             font-size: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Avatar dropdown toggle
+            const avatarBtn = document.getElementById('avatar-btn');
+            const userDropdown = document.getElementById('user-dropdown');
+            if (avatarBtn && userDropdown) {
+                avatarBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    userDropdown.classList.toggle('active');
+                });
+                document.addEventListener('click', () => userDropdown.classList.remove('active'));
+            }
+
+            // Help dropdown toggle - NOW ADDED
+            const helpBtn = document.getElementById('help-btn');
+            const helpDropdown = document.getElementById('help-dropdown');
+            if (helpBtn && helpDropdown) {
+                helpBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    helpDropdown.classList.toggle('active');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!helpDropdown.contains(e.target) && e.target !== helpBtn) {
+                        helpDropdown.classList.remove('active');
+                    }
+                });
+            }
+
+            // Sidebar popup toggle
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const sidebarPopup = document.getElementById('sidebar-popup');
+            if (hamburgerBtn && sidebarPopup) {
+                hamburgerBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    sidebarPopup.classList.toggle('active');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!sidebarPopup.contains(e.target) && e.target !== hamburgerBtn) {
+                        sidebarPopup.classList.remove('active');
+                    }
+                });
+            }
+
+            // Chat modal toggle
+            const messageBtn = document.getElementById('floating-message-btn');
+            const chatModal = document.getElementById('chat-modal');
+            const chatClose = document.getElementById('chat-close');
+
+            if (messageBtn && chatModal) {
+                messageBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    chatModal.classList.toggle('active');
+                });
+
+                chatClose.addEventListener('click', () => {
+                    chatModal.classList.remove('active');
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (chatModal.classList.contains('active') && !chatModal.contains(e.target) && e.target !== messageBtn) {
+                        chatModal.classList.remove('active');
+                    }
+                });
+            }
+        });
+    </script>
 </head>
 <body>
     <div class="top-nav">
         <div class="left-nav">
-            <button class="hamburger-btn">☰</button>
-            <div class="logo">My Crosslister</div>
-            <div class="nav-links">
-                <a href="/inventory">Inventory</a>
-                <a href="/orders" class="active">Orders</a>
-                <!-- ADD THIS LINE FOR TASKS BUTTON -->
-                <a href="/tasks">Tasks</a>
-                <a href="/my-shops">My Shops</a>
-                <a href="/settings">Settings</a>
-            </div>
+            <button id="hamburger-btn" class="hamburger-btn">☰</button>
+            <div class="logo">Cross-Listing</div>
+        </div>
+        <div class="nav-links">
+            <a href="/inventory">📦 Inventory</a>
+            <a href="#">📋 Tasks</a>
+            <a href="/orders" class="active">🛒 Orders</a>
+            <a href="/my-shops">🏪 My Shops</a>
+            <a href="/settings">⚙️ Settings</a>
         </div>
         <div class="help-user">
-            <button class="help-btn">? Help</button>
-            <button class="avatar-btn">U</button>
+            <button id="help-btn" class="help-btn">🛟 Help</button>
+            <button id="avatar-btn" class="avatar-btn">
+                <% const email = (user && user.email) ? user.email : 'user@example.com'; %>
+                <%= email.charAt(0).toUpperCase() %>
+            </button>
         </div>
     </div>
 
-    <!-- Help Dropdown -->
-    <div class="help-dropdown">
-        <div class="help-item">Help Center</div>
-        <div class="help-item">What's New</div>
+    <!-- Help Dropdown - NOW ADDED -->
+    <div id="help-dropdown" class="help-dropdown">
+        <div class="help-item">Report Bug</div>
+        <div class="help-item" onclick="window.location.href='/feedback'">Submit Feedback</div>
+        <div class="help-item">Roadmap</div>
+        <div class="help-item">Changelog</div>
         <div class="help-divider"></div>
-        <div class="help-item">Send Feedback</div>
-        <div class="help-item">Contact Support</div>
-    </div>
-
-    <!-- Profile Dropdown -->
-    <div class="user-dropdown">
-        <div class="user-info">
-            <strong><%= user.email %></strong>
-            <span>Free Plan</span>
-        </div>
-        <div class="dropdown-divider"></div>
-        <a href="/account" class="dropdown-item">Account Settings</a>
-        <a href="#" class="dropdown-item">Billing</a>
-        <div class="dropdown-divider"></div>
-        <a href="#" class="dropdown-item logout">Log Out</a>
+        <div class="help-item">Support Articles</div>
     </div>
 
     <!-- Sidebar Popup -->
-    <div class="sidebar-popup">
-        <div class="sidebar-header">MENU</div>
-        <div class="sidebar-item active"><span class="icon">📦</span> Inventory</div>
-        <div class="sidebar-item"><span class="icon">🛍️</span> Orders</div>
-        <div class="sidebar-item"><span class="icon">⚙️</span> Tasks</div>
-        <div class="sidebar-item"><span class="icon">🏪</span> My Shops</div>
-        <div class="sidebar-item"><span class="icon">⚙️</span> Settings</div>
+    <div id="sidebar-popup" class="sidebar-popup">
+        <div class="sidebar-header">Switch to</div>
+        <div class="sidebar-item active">
+            <span class="icon">✖</span> Cross-listing
+        </div>
+        <div class="sidebar-item">
+            <span class="icon">👚</span> Poshmark Automation
+        </div>
+        <div class="sidebar-item">
+            <span class="icon">🟦</span> eBay Automation
+        </div>
     </div>
 
-    <!-- Alert Banner (example - remove if not needed) -->
+    <!-- Profile Dropdown -->
+    <div id="user-dropdown" class="user-dropdown">
+        <div class="user-info">
+            <strong>Vaultifacts Official</strong>
+            <span><%= email %></span>
+        </div>
+        <div class="dropdown-divider"></div>
+        <a href="/settings" class="dropdown-item">Settings</a>
+        <a href="#" class="dropdown-item">Plans/Billing</a>
+        <a href="#" class="dropdown-item">Affiliate Program</a>
+        <div class="dropdown-divider"></div>
+        <a href="/logout" class="dropdown-item logout">Logout</a>
+    </div>
+
     <div class="alert-banner">
         <div class="exclamation">!</div>
-        <div>Your account is on the free plan. Upgrade to Pro to unlock unlimited listings!</div>
-        <a href="#">Upgrade Now</a>
+        Attention! Extension is not installed on your browser. To use PrimeLister, please install the extension.
+        <a href="#">Install Extension</a>
     </div>
 
     <div class="main-content">
         <div class="page-header">Orders</div>
+
         <div class="toolbar">
-            <input type="text" class="search-bar" placeholder="Search orders...">
+            <input type="text" class="search-bar" placeholder="Search product name, SKU or internal note...">
             <div class="toolbar-right">
-                <button class="icon-btn"><span>Filter</span></button>
-                <button class="icon-btn"><span>Export</span></button>
+                <button class="icon-btn"><span>Fullscreen</span></button>
+                <button class="icon-btn"><span>Refresh</span></button>
             </div>
         </div>
 
         <table>
             <thead>
                 <tr>
-                    <th>Order</th>
-                    <th>Date</th>
-                    <th>Customer</th>
-                    <th>Platform</th>
-                    <th>Total</th>
-                    <th>Status</th>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Marketplace</th>
+                    <th>Sold On</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Mock rows or loop <% orders.forEach(...) %> when data added -->
                 <tr>
-                    <td>
-                        <img src="https://via.placeholder.com/50" class="order-image">
-                        <div>
-                            <div class="order-name">Blue Denim Jacket</div>
-                            <div class="bundle-badge">Bundle (3 items)</div>
-                        </div>
-                    </td>
-                    <td>Dec 20, 2025<br><span class="sold-date">Sold 2 days ago</span></td>
-                    <td>Jane Doe</td>
-                    <td><span class="marketplace-badge">Poshmark</span></td>
-                    <td>$85.00</td>
-                    <td>Shipped</td>
+                    <td><img src="https://via.placeholder.com/50" alt="Product" class="order-image"></td>
+                    <td class="order-name">Brand New USB C 3-in-1 Hub Adapter 4K HDMI USB 3.0 PD Charging Multiport Dongle</td>
+                    <td>CAD12</td>
+                    <td><span class="marketplace-badge">Poshmark (US)</span></td>
+                    <td class="sold-date">19 Dec 2025</td>
+                </tr>
+                <tr>
+                    <td><img src="https://via.placeholder.com/50" alt="Product" class="order-image"></td>
+                    <td class="order-name">Brand New USB C 3-in-1 Hub Adapter 4K HDMI USB 3.0 PD Charging Multiport Dongle</td>
+                    <td>CAD12</td>
+                    <td><span class="marketplace-badge">Poshmark (CA)</span></td>
+                    <td class="sold-date">19 Dec 2025</td>
+                </tr>
+                <tr>
+                    <td><img src="https://via.placeholder.com/50" alt="Product" class="order-image"></td>
+                    <td class="order-name">Bundle of Brand New Loose Pokemon White... and 1 more item</td>
+                    <td>CAD68</td>
+                    <td><span class="bundle-badge">Bundle</span> <span class="marketplace-badge">Poshmark (CA)</span></td>
+                    <td class="sold-date">01 Dec 2025</td>
+                </tr>
+                <tr>
+                    <td><img src="https://via.placeholder.com/50" alt="Product" class="order-image"></td>
+                    <td class="order-name">Bundle of Brand New Loose Pokemon White... and 1 more item</td>
+                    <td>CAD68</td>
+                    <td><span class="bundle-badge">Bundle</span> <span class="marketplace-badge">Poshmark (US)</span></td>
+                    <td class="sold-date">01 Dec 2025</td>
                 </tr>
                 <!-- Add more rows as needed -->
             </tbody>
         </table>
     </div>
 
-    <div class="floating-message-btn">💬</div>
+    <!-- Floating Message Button -->
+    <button id="floating-message-btn" class="floating-message-btn" title="Chat">
+        💬
+    </button>
 
-    <div class="chat-modal">
+    <!-- Chat Modal -->
+    <div id="chat-modal" class="chat-modal">
         <div class="chat-header">
-            <div>
-                <div>My Crosslister Support</div>
-                <div class="chat-subtitle">Typically replies in minutes</div>
+            <div class="chat-tabs">
+                <div class="chat-tab active">💬 Chat</div>
+                <div class="chat-tab">🛟 Help</div>
             </div>
             <div class="chat-avatars">
                 <div class="pl-avatar">PL</div>
+                <img src="https://via.placeholder.com/32" alt="Support">
+                <img src="https://via.placeholder.com/32" alt="Support">
             </div>
+        </div>
+        <div class="chat-subtitle">
+            Questions? Chat with us!<br>
+            Was last active 11/19/2025
         </div>
         <div class="chat-body">
             <div class="chat-message">
-                <strong>Support</strong>
-                Hello! How can we help you today?
+                <strong>PrimeLister</strong>
+                How can we help with PrimeLister?
             </div>
         </div>
         <div class="chat-footer">
-            <input type="text" class="chat-input" placeholder="Type a message...">
+            <input type="text" class="chat-input" placeholder="Compose your message...">
             <button class="chat-send">➤</button>
         </div>
-        <button class="chat-close">−</button>
+        <button id="chat-close" class="chat-close">×</button>
     </div>
-
-    <script>
-        // Hamburger menu toggle
-        document.querySelector('.hamburger-btn').addEventListener('click', () => {
-            document.querySelector('.sidebar-popup').classList.toggle('active');
-        });
-
-        // Help dropdown
-        document.querySelector('.help-btn').addEventListener('click', () => {
-            document.querySelector('.help-dropdown').classList.toggle('active');
-        });
-
-        // Avatar dropdown
-        document.querySelector('.avatar-btn').addEventListener('click', () => {
-            document.querySelector('.user-dropdown').classList.toggle('active');
-        });
-
-        // Floating chat toggle
-        document.querySelector('.floating-message-btn').addEventListener('click', () => {
-            document.querySelector('.chat-modal').classList.toggle('active');
-        });
-
-        // Close chat with minus button
-        document.querySelector('.chat-close').addEventListener('click', () => {
-            document.querySelector('.chat-modal').classList.remove('active');
-        });
-
-        // Close dropdowns on outside click
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.help-user') && !e.target.closest('.hamburger-btn')) {
-                document.querySelector('.help-dropdown').classList.remove('active');
-                document.querySelector('.user-dropdown').classList.remove('active');
-                document.querySelector('.sidebar-popup').classList.remove('active');
-            }
-        });
-    </script>
 </body>
 </html>
