@@ -75,14 +75,14 @@ server.get('/bugs-fixes', (req, res) => {
     res.render('bugs-fixes', { user });
 });
 
-// Orders page
+// Orders page ← FIXED AND ADDED
 server.get('/orders', (req, res) => {
     res.render('orders', { user });
 });
 
-// Tasks page (NEW - adds support for existing tasks.ejs)
+// Tasks page - ADDED TO MAKE BUTTON WORK
 server.get('/tasks', (req, res) => {
-    const tasks = []; // mock empty array for now
+    const tasks = []; // Mock empty array - table will show no data message if present in EJS
     res.render('tasks', { user, tasks });
 });
 
@@ -103,5 +103,5 @@ server.listen(PORT, () => {
     console.log(`  /my-shops     - My Shops`);
     console.log(`  /settings     - Settings`);
     console.log(`  /orders       - Orders (now working)`);
-    console.log(`  /tasks        - Tasks (now added)`);
+    console.log(`  /tasks        - Tasks (now working)`);
 });
