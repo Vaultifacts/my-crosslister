@@ -1,82 +1,106 @@
-<%- include('partials/header') %> <!-- Assumes you have partials for shared components -->
+const express = require('express');
+const path = require('path');
 
-<body>
-  <%- include('partials/sidebar') %>
-  <%- include('partials/topnav', { active: 'tasks' }) %> <!-- Pass active page for highlighting -->
+const server = express();
+const PORT = process.env.PORT || 5000;
 
-  <div class="main-content">
-    <div class="page-header">
-      <h1>Tasks</h1>
-      <p>View and manage your automation tasks, including cross-listing, relisting, and scheduled jobs.</p>
-    </div>
+// View engine setup (EJS)
+server.set('view engine', 'ejs');
+server.set('views', path.join(__dirname, 'views'));
 
-    <!-- Filters Bar -->
-    <div class="filters-bar">
-      <input type="text" placeholder="Search tasks..." class="search-input">
-      <select class="status-filter">
-        <option>All</option>
-        <option>Running</option>
-        <option>Completed</option>
-        <option>Failed</option>
-        <option>Scheduled</option>
-      </select>
-      <button class="btn-primary">Apply Filters</button>
-    </div>
+// Serve static files (CSS, JS, images, etc.) if you have a public folder
+server.use(express.static(path.join(__dirname, 'public')));
 
-    <!-- Tasks Table -->
-    <% if (tasks.length > 0) { %>
-      <table class="tasks-table">
-        <thead>
-          <tr>
-            <th>Task ID</th>
-            <th>Type</th>
-            <th>Items</th>
-            <th>Status</th>
-            <th>Started At</th>
-            <th>Completed At</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% tasks.forEach(task => { %>
-            <tr>
-              <td><%= task.id %></td>
-              <td><%= task.type %></td>
-              <td><%= task.items %></td>
-              <td>
-                <span class="status-badge <%= task.status.toLowerCase().replace(' ', '-') %>">
-                  <%= task.status %>
-                </span>
-              </td>
-              <td><%= task.started || '-' %></td>
-              <td><%= task.completed || '-' %></td>
-              <td>
-                <button class="btn-small">View Log</button>
-                <% if (task.status === 'Failed') { %>
-                  <button class="btn-small retry">Retry</button>
-                <% } %>
-              </td>
-            </tr>
-          <% }) %>
-        </tbody>
-      </table>
-    <% } else { %>
-      <div class="empty-state">
-        <p>No tasks found. Start a cross-listing or relisting job to see history here.</p>
-      </div>
-    <% } %>
+// Middleware for parsing body (useful if you add forms later)
+server.use(express.urlencoded({ extended: true }));
+server.use(express.json());
 
-    <!-- Pagination placeholder -->
-    <div class="pagination">
-      <button disabled>&laquo; Previous</button>
-      <span>Page 1 of 1</span>
-      <button disabled>Next &raquo;</button>
-    </div>
-  </div>
+// Example user object (used in avatar button)
+// Replace this with your real authentication/session logic later
+const user = {
+    email: 'user@example.com'
+};
 
-  <%- include('partials/chat-modal') %>
-  <%- include('partials/help-dropdown') %> <!-- If separate -->
+// Routes
 
-  <script src="/js/main.js"></script> <!-- Your shared JS for modals, etc. -->
-</body>
-</html>
+// Root route (redirects to feedback for testing)
+server.get('/', (req, res) => {
+    res.redirect('/feedback');
+});
+
+// Inventory page
+server.get('/inventory', (req, res) => {
+    const items = []; // empty for now – prevents "items is not defined"
+    res.render('inventory', { user, items });
+});
+
+server.get('/my-shops', (req, res) => {
+    res.render('my-shops', { user });
+});
+
+server.get('/settings', (req, res) => {
+    res.render('settings', { user });
+});
+
+// NEW: Tasks page route
+server.get('/tasks', (req, res) => {
+    res.render('tasks', { user });
+});
+
+// Feedback list page
+server.get('/feedback', (req, res) => {
+    res.render('feedback', { user });
+});
+
+// Feedback detail routes
+server.get('/feedback/depop-refresh-listings', (req, res) => {
+    res.render('feedback-detail', { user });
+});
+
+server.get('/feedback/adding-price-shipping', (req, res) => {
+    res.render('feedback-detail', { user });
+});
+
+server.get('/feedback/:slug', (req, res) => {
+    res.render('feedback-detail', { user });
+});
+
+// Roadmap page
+server.get('/roadmap', (req, res) => {
+    res.render('roadmap', { user });
+});
+
+// Change Log page
+server.get('/changelog', (req, res) => {
+    res.render('changelog', { user });
+});
+
+// Bugs & Fixes board page
+server.get('/bugs-fixes', (req, res) => {
+    res.render('bugs-fixes', { user });
+});
+
+// Orders page ← FIXED AND ADDED
+server.get('/orders', (req, res) => {
+    res.render('orders', { user });
+});
+
+// Catch-all 404 handler
+server.use((req, res) => {
+    res.status(404).send('<h1>404 - Page Not Found</h1><p>The page you are looking for does not exist.</p>');
+});
+
+// Start server
+server.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Available pages:`);
+    console.log(`  /feedback     - Feedback & Improvements`);
+    console.log(`  /roadmap      - Roadmap`);
+    console.log(`  /changelog    - Change Log`);
+    console.log(`  /bugs-fixes   - Bugs & Fixes board`);
+    console.log(`  /inventory    - Inventory`);
+    console.log(`  /my-shops     - My Shops`);
+    console.log(`  /settings     - Settings`);
+    console.log(`  /orders       - Orders (now working)`);   
+    console.log(`  /tasks        - Tasks (new)`);
+});
