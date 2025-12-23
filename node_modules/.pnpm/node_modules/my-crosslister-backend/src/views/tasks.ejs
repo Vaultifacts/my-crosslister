@@ -68,7 +68,6 @@
             cursor: pointer;
             border: none;
         }
-        /* Help Dropdown */
         .help-dropdown {
             position: absolute;
             top: 60px;
@@ -96,7 +95,6 @@
             background: #eee;
             margin: 8px 0;
         }
-        /* Profile Dropdown */
         .user-dropdown {
             position: absolute;
             top: 60px;
@@ -139,7 +137,6 @@
         .dropdown-item.logout {
             color: #c62828;
         }
-        /* Sidebar Popup */
         .sidebar-popup {
             position: absolute;
             top: 60px;
@@ -464,17 +461,17 @@
     </style>
 </head>
 <body>
-    <!-- Full Navbar (Tasks active) -->
+    <!-- Dynamic Navbar -->
     <div class="top-nav">
         <div class="left-nav">
             <button class="hamburger-btn">☰</button>
             <div class="logo">My Crosslister</div>
             <div class="nav-links">
-                <a href="/inventory">Inventory</a>
-                <a href="/tasks" class="active">Tasks</a>
-                <a href="/orders">Orders</a>
-                <a href="/my-shops">My Shops</a>
-                <a href="/settings">Settings</a>
+                <a href="/inventory" <%= currentPage === 'inventory' ? 'class="active"' : '' %>>Inventory</a>
+                <a href="/tasks" <%= currentPage === 'tasks' ? 'class="active"' : '' %>>Tasks</a>
+                <a href="/orders" <%= currentPage === 'orders' ? 'class="active"' : '' %>>Orders</a>
+                <a href="/my-shops" <%= currentPage === 'my-shops' ? 'class="active"' : '' %>>My Shops</a>
+                <a href="/settings" <%= currentPage === 'settings' ? 'class="active"' : '' %>>Settings</a>
             </div>
         </div>
         <div class="help-user">
@@ -483,7 +480,39 @@
         </div>
     </div>
 
-    <!-- Full Red Banner -->
+    <!-- Sidebar Popup -->
+    <div class="sidebar-popup">
+        <div class="sidebar-header">Menu</div>
+        <div class="sidebar-item <%= currentPage === 'inventory' ? 'active' : '' %>"><span class="icon">📦</span> Inventory</div>
+        <div class="sidebar-item <%= currentPage === 'tasks' ? 'active' : '' %>"><span class="icon">✓</span> Tasks</div>
+        <div class="sidebar-item <%= currentPage === 'orders' ? 'active' : '' %>"><span class="icon">🛍️</span> Orders</div>
+        <div class="sidebar-item <%= currentPage === 'my-shops' ? 'active' : '' %>"><span class="icon">🏪</span> My Shops</div>
+        <div class="sidebar-item <%= currentPage === 'settings' ? 'active' : '' %>"><span class="icon">⚙️</span> Settings</div>
+    </div>
+
+    <!-- Help Dropdown -->
+    <div class="help-dropdown">
+        <div class="help-item">Help Center</div>
+        <div class="help-item">What's New</div>
+        <div class="help-divider"></div>
+        <div class="help-item">Feedback</div>
+        <div class="help-item">Roadmap</div>
+        <div class="help-item">Changelog</div>
+    </div>
+
+    <!-- Profile Dropdown -->
+    <div class="user-dropdown">
+        <div class="user-info">
+            <strong>My User</strong>
+            <span>user@example.com</span>
+        </div>
+        <div class="dropdown-divider"></div>
+        <a href="/settings" class="dropdown-item">Account Settings</a>
+        <a href="#" class="dropdown-item">Billing</a>
+        <a href="#" class="dropdown-item logout">Log Out</a>
+    </div>
+
+    <!-- Red Banner -->
     <div class="alert-banner">
         <div class="alert-content">
             <div class="exclamation">!</div>
@@ -548,7 +577,7 @@
         </div>
     </div>
 
-    <!-- Full Floating Chat Button + Modal -->
+    <!-- Floating Chat -->
     <div class="floating-message-btn">+</div>
     <div class="chat-modal">
         <div class="chat-header">
@@ -579,7 +608,6 @@
     </div>
 
     <script>
-        // Full JS for interactivity (dropdowns, sidebar, chat toggle – copy/adapt from orders.ejs)
         const hamburgerBtn = document.querySelector('.hamburger-btn');
         const sidebarPopup = document.querySelector('.sidebar-popup');
         const helpBtn = document.querySelector('.help-btn');
@@ -590,21 +618,32 @@
         const chatModal = document.querySelector('.chat-modal');
         const chatClose = document.querySelector('.chat-close');
 
-        // Toggle functions
-        hamburgerBtn.addEventListener('click', () => sidebarPopup.classList.toggle('active'));
-        helpBtn.addEventListener('click', () => helpDropdown.classList.toggle('active'));
-        avatarBtn.addEventListener('click', () => userDropdown.classList.toggle('active'));
+        hamburgerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sidebarPopup.classList.toggle('active');
+        });
+        helpBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            helpDropdown.classList.toggle('active');
+        });
+        avatarBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userDropdown.classList.toggle('active');
+        });
         floatingBtn.addEventListener('click', () => chatModal.classList.toggle('active'));
         chatClose.addEventListener('click', () => chatModal.classList.remove('active'));
 
-        // Close on outside click
         document.addEventListener('click', (e) => {
-            if (!helpBtn.contains(e.target) && !helpDropdown.contains(e.target)) helpDropdown.classList.remove('active');
-            if (!avatarBtn.contains(e.target) && !userDropdown.contains(e.target)) userDropdown.classList.remove('active');
-            if (!hamburgerBtn.contains(e.target) && !sidebarPopup.contains(e.target)) sidebarPopup.classList.remove('active');
+            if (!helpBtn.contains(e.target) && !helpDropdown.contains(e.target)) {
+                helpDropdown.classList.remove('active');
+            }
+            if (!avatarBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                userDropdown.classList.remove('active');
+            }
+            if (!hamburgerBtn.contains(e.target) && !sidebarPopup.contains(e.target)) {
+                sidebarPopup.classList.remove('active');
+            }
         });
     </script>
 </body>
 </html>
-
-// GitDoc sync test - Dec 22, 2025
