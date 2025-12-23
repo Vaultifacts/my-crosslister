@@ -42,6 +42,11 @@ server.get('/settings', (req, res) => {
     res.render('settings', { user });
 });
 
+// NEW: Tasks page route
+server.get('/tasks', (req, res) => {
+    res.render('tasks', { user });
+});
+
 // Feedback list page
 server.get('/feedback', (req, res) => {
     res.render('feedback', { user });
@@ -75,7 +80,7 @@ server.get('/bugs-fixes', (req, res) => {
     res.render('bugs-fixes', { user });
 });
 
-// Orders page ← FIXED AND ADDED
+// Orders page
 server.get('/orders', (req, res) => {
     res.render('orders', { user });
 });
@@ -96,5 +101,6 @@ server.listen(PORT, () => {
     console.log(`  /inventory    - Inventory`);
     console.log(`  /my-shops     - My Shops`);
     console.log(`  /settings     - Settings`);
-    console.log(`  /orders       - Orders (now working)`);
+    console.log(`  /orders       - Orders`);
+    console.log(`  /tasks        - Tasks (new)`);
 });
