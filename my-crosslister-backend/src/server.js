@@ -75,9 +75,15 @@ server.get('/bugs-fixes', (req, res) => {
     res.render('bugs-fixes', { user });
 });
 
-// Orders page ← FIXED AND ADDED
+// Orders page
 server.get('/orders', (req, res) => {
     res.render('orders', { user });
+});
+
+// Tasks page (NEW - adds support for existing tasks.ejs)
+server.get('/tasks', (req, res) => {
+    const tasks = []; // mock empty array for now
+    res.render('tasks', { user, tasks });
 });
 
 // Catch-all 404 handler
@@ -97,4 +103,5 @@ server.listen(PORT, () => {
     console.log(`  /my-shops     - My Shops`);
     console.log(`  /settings     - Settings`);
     console.log(`  /orders       - Orders (now working)`);
+    console.log(`  /tasks        - Tasks (now added)`);
 });
