@@ -8,29 +8,25 @@ const PORT = process.env.PORT || 5000;
 server.set('view engine', 'ejs');
 server.set('views', path.join(__dirname, 'views'));
 
-// Serve static files (CSS, JS, images, etc.) if you have a public folder
+// Serve static files
 server.use(express.static(path.join(__dirname, 'public')));
 
-// Middleware for parsing body (useful if you add forms later)
+// Middleware
 server.use(express.urlencoded({ extended: true }));
 server.use(express.json());
 
-// Example user object (used in avatar button)
-// Replace this with your real authentication/session logic later
+// User object
 const user = {
     email: 'user@example.com'
 };
 
 // Routes
-
-// Root route (redirects to feedback for testing)
 server.get('/', (req, res) => {
     res.redirect('/feedback');
 });
 
-// Inventory page
 server.get('/inventory', (req, res) => {
-    const items = []; // empty for now – prevents "items is not defined"
+    const items = [];
     res.render('inventory', { user, items });
 });
 
@@ -42,17 +38,15 @@ server.get('/settings', (req, res) => {
     res.render('settings', { user });
 });
 
-// NEW: Tasks page route
+// NEW: Tasks route
 server.get('/tasks', (req, res) => {
     res.render('tasks', { user });
 });
 
-// Feedback list page
 server.get('/feedback', (req, res) => {
     res.render('feedback', { user });
 });
 
-// Feedback detail routes
 server.get('/feedback/depop-refresh-listings', (req, res) => {
     res.render('feedback-detail', { user });
 });
@@ -65,42 +59,29 @@ server.get('/feedback/:slug', (req, res) => {
     res.render('feedback-detail', { user });
 });
 
-// Roadmap page
 server.get('/roadmap', (req, res) => {
     res.render('roadmap', { user });
 });
 
-// Change Log page
 server.get('/changelog', (req, res) => {
     res.render('changelog', { user });
 });
 
-// Bugs & Fixes board page
 server.get('/bugs-fixes', (req, res) => {
     res.render('bugs-fixes', { user });
 });
 
-// Orders page
 server.get('/orders', (req, res) => {
     res.render('orders', { user });
 });
 
-// Catch-all 404 handler
+// 404 handler
 server.use((req, res) => {
-    res.status(404).send('<h1>404 - Page Not Found</h1><p>The page you are looking for does not exist.</p>');
+    res.status(404).send('<h1>404 - Page Not Found</h1>');
 });
 
 // Start server
 server.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
-    console.log(`Available pages:`);
-    console.log(`  /feedback     - Feedback & Improvements`);
-    console.log(`  /roadmap      - Roadmap`);
-    console.log(`  /changelog    - Change Log`);
-    console.log(`  /bugs-fixes   - Bugs & Fixes board`);
-    console.log(`  /inventory    - Inventory`);
-    console.log(`  /my-shops     - My Shops`);
-    console.log(`  /settings     - Settings`);
-    console.log(`  /orders       - Orders`);
-    console.log(`  /tasks        - Tasks (new)`);
+    console.log(`Pages: /feedback, /roadmap, /changelog, /bugs-fixes, /inventory, /my-shops, /settings, /orders, /tasks`);
 });
