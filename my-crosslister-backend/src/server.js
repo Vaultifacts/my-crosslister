@@ -3,31 +3,37 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const path = require('path');
-const authRoutes = require('./routes/auth');          // Fixed: removed extra './src'
-const inventoryRoutes = require('./routes/inventory'); // Fixed: removed extra './src'
+const authRoutes = require('./routes/auth');          // Fixed path
+const inventoryRoutes = require('./routes/inventory'); // Fixed path
+
 const app = express();
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));                    // Fixed: was 'src/views'
-app.use(express.static(path.join(__dirname, '../public')));         // Fixed: public is one level up
+app.set('views', path.join(__dirname, 'views'));                    // Fixed: points to src/views
+app.use(express.static(path.join(__dirname, '../public')));         // Fixed: public is one level up from src
 
 // MongoDB Connection
 mongoose.connect('mongodb://localhost:27017/crosslister', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-});
+})
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
-// Session
+// Session with connect-mongo v5+ syntax
 app.use(
   session({
     secret: 'your-secret-key',
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: 'mongodb://localhost:27017/crosslister' }),
-    cookie: { maxAge: 1000 * 60 * 60 * 24 },
+    store: new MongoStore({               // Fixed: new MongoStore() instead of MongoStore.create()
+      mongoUrl: 'mongodb://localhost:27017/crosslister',
+      collectionName: 'sessions'
+    }),
+    cookie: { maxAge: 1000 * 60 * 60 * 24 } // 24 hours
   })
 );
 
