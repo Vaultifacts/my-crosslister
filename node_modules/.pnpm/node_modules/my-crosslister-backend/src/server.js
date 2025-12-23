@@ -1,87 +1,79 @@
 const express = require('express');
 const path = require('path');
+const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
+const dotenv = require('dotenv');
+const authRoutes = require('./routes/auth');
+const inventoryRoutes = require('./routes/inventory');
+const authMiddleware = require('./middleware/auth');
 
-const server = express();
-const PORT = process.env.PORT || 5000;
+dotenv.config();
 
-// View engine setup (EJS)
-server.set('view engine', 'ejs');
-server.set('views', path.join(__dirname, 'views'));
+const app = express();
 
-// Serve static files
-server.use(express.static(path.join(__dirname, 'public')));
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/my-crosslister')
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
+// View engine setup
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 // Middleware
-server.use(express.urlencoded({ extended: true }));
-server.use(express.json());
+app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// User object
-const user = {
-    email: 'user@example.com'
-};
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'fallback-secret',
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/my-crosslister' }),
+  cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 } // 7 days
+}));
 
 // Routes
-server.get('/', (req, res) => {
-    res.redirect('/feedback');
+app.use('/auth', authRoutes);
+
+app.get('/', authMiddleware.isAuthenticated, (req, res) => {
+  res.redirect('/inventory');
 });
 
-server.get('/inventory', (req, res) => {
-    const items = [];
-    res.render('inventory', { user, items });
+app.get('/login', authMiddleware.isNotAuthenticated, (req, res) => {
+  res.render('login', { error: null });
 });
 
-server.get('/my-shops', (req, res) => {
-    res.render('my-shops', { user });
+app.use('/inventory', authMiddleware.isAuthenticated, inventoryRoutes);
+
+// Orders route (example - adjust if you have a dedicated orders.js route file)
+app.get('/orders', authMiddleware.isAuthenticated, (req, res) => {
+  // Mock data or fetch from DB
+  const orders = []; // Replace with actual query
+  res.render('orders', { orders, user: req.session.user });
 });
 
-server.get('/settings', (req, res) => {
-    res.render('settings', { user });
+// Tasks route
+app.get('/tasks', authMiddleware.isAuthenticated, (req, res) => {
+  // Mock data or fetch from DB for tasks
+  const tasks = []; // Replace with actual query if tasks model exists
+  res.render('tasks', { tasks, user: req.session.user });
 });
 
-// NEW: Tasks route
-server.get('/tasks', (req, res) => {
-    res.render('tasks', { user });
+app.get('/account', authMiddleware.isAuthenticated, (req, res) => {
+  res.render('account', { user: req.session.user });
 });
 
-server.get('/feedback', (req, res) => {
-    res.render('feedback', { user });
+// Add other protected routes here (e.g., /my-shops, /settings, etc.)
+// Example:
+// app.get('/my-shops', authMiddleware.isAuthenticated, (req, res) => { res.render('my-shops'); });
+
+app.use((req, res) => {
+  res.status(404).render('error', { message: 'Page not found' });
 });
 
-server.get('/feedback/depop-refresh-listings', (req, res) => {
-    res.render('feedback-detail', { user });
-});
-
-server.get('/feedback/adding-price-shipping', (req, res) => {
-    res.render('feedback-detail', { user });
-});
-
-server.get('/feedback/:slug', (req, res) => {
-    res.render('feedback-detail', { user });
-});
-
-server.get('/roadmap', (req, res) => {
-    res.render('roadmap', { user });
-});
-
-server.get('/changelog', (req, res) => {
-    res.render('changelog', { user });
-});
-
-server.get('/bugs-fixes', (req, res) => {
-    res.render('bugs-fixes', { user });
-});
-
-server.get('/orders', (req, res) => {
-    res.render('orders', { user });
-});
-
-// 404 handler
-server.use((req, res) => {
-    res.status(404).send('<h1>404 - Page Not Found</h1>');
-});
-
-// Start server
-server.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-    console.log(`Pages: /feedback, /roadmap, /changelog, /bugs-fixes, /inventory, /my-shops, /settings, /orders, /tasks`);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
