@@ -1,107 +1,89 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const path = require('path');
+const authRoutes = require('./routes/auth');          // Fixed: removed extra './src'
+const inventoryRoutes = require('./routes/inventory'); // Fixed: removed extra './src'
+const app = express();
 
-const server = express();
-const PORT = process.env.PORT || 5000;
+// Middleware
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));                    // Fixed: was 'src/views'
+app.use(express.static(path.join(__dirname, '../public')));         // Fixed: public is one level up
 
-// View engine setup (EJS)
-server.set('view engine', 'ejs');
-server.set('views', path.join(__dirname, 'views'));
+// MongoDB Connection
+mongoose.connect('mongodb://localhost:27017/crosslister', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
-// Serve static files (CSS, JS, images, etc.) if you have a public folder
-server.use(express.static(path.join(__dirname, 'public')));
-
-// Middleware for parsing body (useful if you add forms later)
-server.use(express.urlencoded({ extended: true }));
-server.use(express.json());
-
-// Example user object (used in avatar button)
-// Replace this with your real authentication/session logic later
-const user = {
-    email: 'user@example.com'
-};
+// Session
+app.use(
+  session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: 'mongodb://localhost:27017/crosslister' }),
+    cookie: { maxAge: 1000 * 60 * 60 * 24 },
+  })
+);
 
 // Routes
+app.use('/auth', authRoutes);
+app.use('/inventory', inventoryRoutes);
 
-// Root route (redirects to feedback for testing)
-server.get('/', (req, res) => {
-    res.redirect('/feedback');
+// Protected Routes
+app.get('/orders', (req, res) => {
+  if (!req.session.userId) return res.redirect('/auth/login');
+  res.render('orders');
 });
 
-// Inventory page
-server.get('/inventory', (req, res) => {
-    const items = []; // empty for now – prevents "items is not defined"
-    res.render('inventory', { user, items });
+app.get('/tasks', (req, res) => {
+  if (!req.session.userId) return res.redirect('/auth/login');
+  res.render('tasks');
 });
 
-server.get('/my-shops', (req, res) => {
-    res.render('my-shops', { user });
+app.get('/my-shops', (req, res) => {
+  if (!req.session.userId) return res.redirect('/auth/login');
+  res.render('my-shops');
 });
 
-server.get('/settings', (req, res) => {
-    res.render('settings', { user });
+app.get('/settings', (req, res) => {
+  if (!req.session.userId) return res.redirect('/auth/login');
+  res.render('settings');
 });
 
-// Feedback list page
-server.get('/feedback', (req, res) => {
-    res.render('feedback', { user });
+app.get('/feedback', (req, res) => {
+  if (!req.session.userId) return res.redirect('/auth/login');
+  res.render('feedback');
 });
 
-// Feedback detail routes
-server.get('/feedback/depop-refresh-listings', (req, res) => {
-    res.render('feedback-detail', { user });
+app.get('/bugs-fixes', (req, res) => {
+  if (!req.session.userId) return res.redirect('/auth/login');
+  res.render('bugs-fixes');
 });
 
-server.get('/feedback/adding-price-shipping', (req, res) => {
-    res.render('feedback-detail', { user });
+app.get('/roadmap', (req, res) => {
+  if (!req.session.userId) return res.redirect('/auth/login');
+  res.render('roadmap');
 });
 
-server.get('/feedback/:slug', (req, res) => {
-    res.render('feedback-detail', { user });
+app.get('/changelog', (req, res) => {
+  if (!req.session.userId) return res.redirect('/auth/login');
+  res.render('changelog');
 });
 
-// Roadmap page
-server.get('/roadmap', (req, res) => {
-    res.render('roadmap', { user });
+// Home/Dashboard Redirect
+app.get('/', (req, res) => {
+  if (req.session.userId) {
+    res.redirect('/inventory');
+  } else {
+    res.redirect('/auth/login');
+  }
 });
 
-// Change Log page
-server.get('/changelog', (req, res) => {
-    res.render('changelog', { user });
-});
-
-// Bugs & Fixes board page
-server.get('/bugs-fixes', (req, res) => {
-    res.render('bugs-fixes', { user });
-});
-
-// Orders page ← FIXED AND ADDED
-server.get('/orders', (req, res) => {
-    res.render('orders', { user });
-});
-
-// Tasks page - ADDED TO MAKE BUTTON WORK
-server.get('/tasks', (req, res) => {
-    const tasks = []; // Mock empty array - table will show no data message if present in EJS
-    res.render('tasks', { user, tasks });
-});
-
-// Catch-all 404 handler
-server.use((req, res) => {
-    res.status(404).send('<h1>404 - Page Not Found</h1><p>The page you are looking for does not exist.</p>');
-});
-
-// Start server
-server.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-    console.log(`Available pages:`);
-    console.log(`  /feedback     - Feedback & Improvements`);
-    console.log(`  /roadmap      - Roadmap`);
-    console.log(`  /changelog    - Change Log`);
-    console.log(`  /bugs-fixes   - Bugs & Fixes board`);
-    console.log(`  /inventory    - Inventory`);
-    console.log(`  /my-shops     - My Shops`);
-    console.log(`  /settings     - Settings`);
-    console.log(`  /orders       - Orders (now working)`);
-    console.log(`  /tasks        - Tasks (now working)`);
-});
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
