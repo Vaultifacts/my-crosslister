@@ -1,95 +1,87 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const session = require('express-session');
-const MongoStore = require('connect-mongo');  // Latest syntax
 const path = require('path');
-const authRoutes = require('./routes/auth');          // Correct relative path
-const inventoryRoutes = require('./routes/inventory'); // Correct relative path
 
-const app = express();
+const server = express();
+const PORT = process.env.PORT || 5000;
+
+// View engine setup (EJS)
+server.set('view engine', 'ejs');
+server.set('views', path.join(__dirname, 'views'));
+
+// Serve static files
+server.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));                    // Points to src/views
-app.use(express.static(path.join(__dirname, '../public')));         // public is one level up
+server.use(express.urlencoded({ extended: true }));
+server.use(express.json());
 
-// MongoDB Connection
-mongoose.connect('mongodb://localhost:27017/crosslister', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
-
-// Session with latest connect-mongo syntax
-app.use(
-  session({
-    secret: 'your-secret-key',
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({          // Official current syntax: MongoStore.create()
-      mongoUrl: 'mongodb://localhost:27017/crosslister',
-      collectionName: 'sessions'
-    }),
-    cookie: { maxAge: 1000 * 60 * 60 * 24 } // 24 hours
-  })
-);
+// User object
+const user = {
+    email: 'user@example.com'
+};
 
 // Routes
-app.use('/auth', authRoutes);
-app.use('/inventory', inventoryRoutes);
-
-// Protected Routes
-app.get('/orders', (req, res) => {
-  if (!req.session.userId) return res.redirect('/auth/login');
-  res.render('orders');
+server.get('/', (req, res) => {
+    res.redirect('/feedback');
 });
 
-app.get('/tasks', (req, res) => {
-  if (!req.session.userId) return res.redirect('/auth/login');
-  res.render('tasks');
+server.get('/inventory', (req, res) => {
+    const items = [];
+    res.render('inventory', { user, items });
 });
 
-app.get('/my-shops', (req, res) => {
-  if (!req.session.userId) return res.redirect('/auth/login');
-  res.render('my-shops');
+server.get('/my-shops', (req, res) => {
+    res.render('my-shops', { user });
 });
 
-app.get('/settings', (req, res) => {
-  if (!req.session.userId) return res.redirect('/auth/login');
-  res.render('settings');
+server.get('/settings', (req, res) => {
+    res.render('settings', { user });
 });
 
-app.get('/feedback', (req, res) => {
-  if (!req.session.userId) return res.redirect('/auth/login');
-  res.render('feedback');
+// NEW: Tasks route
+server.get('/tasks', (req, res) => {
+    res.render('tasks', { user });
 });
 
-app.get('/bugs-fixes', (req, res) => {
-  if (!req.session.userId) return res.redirect('/auth/login');
-  res.render('bugs-fixes');
+server.get('/feedback', (req, res) => {
+    res.render('feedback', { user });
 });
 
-app.get('/roadmap', (req, res) => {
-  if (!req.session.userId) return res.redirect('/auth/login');
-  res.render('roadmap');
+server.get('/feedback/depop-refresh-listings', (req, res) => {
+    res.render('feedback-detail', { user });
 });
 
-app.get('/changelog', (req, res) => {
-  if (!req.session.userId) return res.redirect('/auth/login');
-  res.render('changelog');
+server.get('/feedback/adding-price-shipping', (req, res) => {
+    res.render('feedback-detail', { user });
 });
 
-// Home/Dashboard Redirect
-app.get('/', (req, res) => {
-  if (req.session.userId) {
-    res.redirect('/inventory');
-  } else {
-    res.redirect('/auth/login');
-  }
+server.get('/feedback/:slug', (req, res) => {
+    res.render('feedback-detail', { user });
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.get('/roadmap', (req, res) => {
+    res.render('roadmap', { user });
+});
+
+server.get('/changelog', (req, res) => {
+    res.render('changelog', { user });
+});
+
+server.get('/bugs-fixes', (req, res) => {
+    res.render('bugs-fixes', { user });
+});
+
+server.get('/orders', (req, res) => {
+    res.render('orders', { user });
+});
+
+// 404 handler
+server.use((req, res) => {
+    res.status(404).send('<h1>404 - Page Not Found</h1>');
+});
+
+// Start server
+server.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Pages: /feedback, /roadmap, /changelog, /bugs-fixes, /inventory, /my-shops, /settings, /orders, /tasks`);
+});
