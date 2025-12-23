@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
-const MongoStore = require('connect-mongo');  // No (session) here
+const MongoStore = require('connect-mongo');  // Latest syntax: direct require
 const path = require('path');
 const authRoutes = require('./routes/auth');          // Correct relative path
 const inventoryRoutes = require('./routes/inventory'); // Correct relative path
@@ -23,13 +23,13 @@ mongoose.connect('mongodb://localhost:27017/crosslister', {
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-// Session with connect-mongo v4+ / v5+ syntax
+// Session with latest connect-mongo syntax (v5+ / v6+)
 app.use(
   session({
     secret: 'your-secret-key',
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({          // Fixed: MongoStore.create()
+    store: new MongoStore({             // Fixed: new MongoStore({ ... })
       mongoUrl: 'mongodb://localhost:27017/crosslister',
       collectionName: 'sessions'
     }),
